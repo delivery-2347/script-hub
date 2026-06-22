@@ -1,0 +1,231 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/super%20puper%20optimezison"))()
+
+local CUCUMBER = {
+    SchemeColor = Color3.fromRGB(45, 160, 95),
+    Background = Color3.fromRGB(8, 18, 12),
+    Header = Color3.fromRGB(12, 30, 20),
+    TextColor = Color3.fromRGB(230, 230, 230),
+    ElementColor = Color3.fromRGB(18, 55, 38)
+}
+
+local Window = Library.CreateLib("Cucumber_BEBFT Hub", CUCUMBER)
+
+-- 🔥 ВОТ ЭТО ТЫ ЗАБЫЛ
+local Tab = Window:NewTab("mein")
+local Section = Tab:NewSection("Main")
+
+local Players = game:GetService("Players")
+local VIM = game:GetService("VirtualInputManager")
+
+local player = Players.LocalPlayer
+
+------------------------------------------------
+-- 🔥 FARM
+------------------------------------------------
+
+local farmTIME = 1
+local Enabled = false
+
+Section:NewSlider("delay in teleports", "soso", 10, 2, function(timeFARM)
+    farmTIME = timeFARM
+end)
+
+local Enabled = false
+local Part
+local Connection
+
+Section:NewToggle("auto farm TP", "", function(state)
+    Enabled = state
+     
+    -- ❌ выключение
+    if not state then
+        if Connection then
+            Connection:Disconnect()
+            Connection = nil
+        end
+    
+        if Part then
+            Part:Destroy()
+            Part = nil
+        end
+    
+        return
+    end
+    
+    -- ✅ включение AIRWALK
+    if Part then
+        Part:Destroy()
+    end
+     
+    Part = Instance.new("Part")
+    Part.Size = Vector3.new(4,1,4)
+    Part.Anchored = true
+    Part.CanCollide = true
+    Part.Parent = workspace
+      
+    getgenv().AirWalkPart = Part
+     
+    Connection = game:GetService("RunService").Heartbeat:Connect(function()
+        local Character = game.Players.LocalPlayer.Character
+        local Root = Character and Character:FindFirstChild("HumanoidRootPart")
+         
+        if Root and Part then
+            Part.Position = Root.Position + Vector3.new(0,-3.5,0)
+        end
+    end)
+    
+ -- 🔁 TELEPORT LOOP
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+    
+    local function tp()
+        local Character = player.Character or player.CharacterAdded:Wait()
+        local Root = Character:WaitForChild("HumanoidRootPart")
+    
+        Root.CFrame = CFrame.new(-105.167564, 113.341957, 1368.97583, 0.0176027305, 0.0415863991, -0.998979867, -8.69479155e-09, 0.99913466, 0.0415928438, 0.999845088, -0.000732138928, 0.0175874978)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-90.1123886, 113.342079, 2142.78418, 0.0193490088, -0.0296126213, -0.999374151, -8.65737615e-09, 0.99956131, -0.0296181664, 0.999812782, 0.00057309086, 0.0193405207)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(75.1767349, 113.342064, 2914.53857, 0.0193497986, -0.0309557263, -0.999333441, -8.62645777e-09, 0.9995206, -0.0309615228, 0.999812782, 0.00059910788, 0.0193405226)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-110.502899, 115.149529, 3678.08765, -0.00344295125, 0.0456167087, -0.998953104, -9.10376396e-09, 0.998959005, 0.0456169806, 0.999994099, 0.000157066126, -0.00343936658)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-113.162552, 115.149529, 4449.93994, -0.00345250522, 0.0456166901, -0.998953044, 9.05411035e-09, 0.998959005, 0.045616962, 0.99999404, 0.000157483766, -0.00344891171)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-115.828888, 115.149529, 5222.73584, -0.00345248799, 0.0456167087, -0.998953044, -9.02760089e-09, 0.998959005, 0.0456169806, 0.99999404, 0.000157501097, -0.00344889355)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-118.45929, 115.149529, 5985.1167, -0.00345248752, 0.0456166901, -0.998953044, -8.91622065e-09, 0.998959005, 0.045616962, 0.99999404, 0.000157500908, -0.00344889308)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-121.168747, 115.149529, 6770.41064, -0.00345248799, 0.0456166975, -0.998953044, -9.00879904e-09, 0.998959005, 0.0456169695, 0.99999404, 0.000157501039, -0.00344889355)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-126.530991, 75.1733704, 7531.75, -0.0104803331, 0.00665896572, -0.999922931, 8.66948557e-09, 0.999977827, 0.00665933127, 0.999945104, 6.97833384e-05, -0.0104801003)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-90.3094559, 77.1855392, 8295.91406, -0.020726366, 0.0563624166, -0.998195231, -9.7489643e-09, 0.998409688, 0.0563745275, 0.999785185, 0.00116844883, -0.0206934046)
+        task.wait(1)
+    
+        Root.CFrame = CFrame.new(-56.0303154, -359.162079, 9487.84277, -0.268673837, 0.184169471, -0.945460737, -1.61827902e-08, 0.98155117, 0.19119966, 0.963231206, 0.05137036, -0.263717115)
+    end
+    
+    -- 🔁 первый запуск
+    task.spawn(tp)
+    
+    -- 🔁 после смерти
+    player.CharacterAdded:Connect(function()
+        task.wait(1)
+        task.spawn(tp)
+    end)
+end)
+
+
+------------------------------------------------
+-- 🔥 AUTO E
+------------------------------------------------
+
+local AutoE = false
+
+Section:NewToggle("anti afk", "", function(state)
+    AutoE = state
+end)
+
+task.spawn(function()
+    while true do
+        if AutoE then
+            task.wait(120)
+
+            if AutoE then
+                VIM:SendKeyEvent(true, Enum.KeyCode.E, false, game)
+                task.wait(1)
+                VIM:SendKeyEvent(false, Enum.KeyCode.E, false, game)
+            end
+        else
+            task.wait(0.1)
+        end
+    end
+end)
+
+------------------------------------------------
+-- 🔥 AFK TIMER
+------------------------------------------------
+
+local AFKTimerEnabled = false
+
+Section:NewToggle("AFK Timer", "Shows time until AFK kick", function(state)
+    AFKTimerEnabled = state
+
+    if state then
+        task.spawn(function()
+            local UserInputService = game:GetService("UserInputService")
+
+            local player = Players.LocalPlayer
+            local AFK_LIMIT = 20 * 60
+            local lastActivity = os.clock()
+
+            local screenGui = Instance.new("ScreenGui")
+            screenGui.Name = "AFK_Timer"
+            screenGui.ResetOnSpawn = false
+            screenGui.Parent = player.PlayerGui
+
+            local label = Instance.new("TextLabel")
+            label.Size = UDim2.new(0, 220, 0, 50)
+            label.Position = UDim2.new(0, 10, 0, 10)
+            label.BackgroundTransparency = 0.3
+            label.BackgroundColor3 = Color3.fromRGB(20,20,20)
+            label.TextColor3 = Color3.fromRGB(255,255,255)
+            label.Font = Enum.Font.SourceSansBold
+            label.TextSize = 20
+            label.Parent = screenGui
+
+            local function resetActivity()
+                lastActivity = os.clock()
+            end
+
+            local c1 = UserInputService.InputBegan:Connect(resetActivity)
+            local c2 = UserInputService.InputChanged:Connect(resetActivity)
+            local c3 = UserInputService.InputEnded:Connect(resetActivity)
+
+            while AFKTimerEnabled and screenGui.Parent do
+                task.wait(1)
+
+                local idle = os.clock() - lastActivity
+                local remaining = AFK_LIMIT - idle
+
+                if remaining <= 0 then
+                    label.Text = "💀 AFK: КИК СКОРО"
+                    label.TextColor3 = Color3.fromRGB(255,0,0)
+                else
+                    local m = math.floor(remaining / 60)
+                    local s = math.floor(remaining % 60)
+
+                    label.TextColor3 =
+                        remaining <= 120
+                        and Color3.fromRGB(255,80,80)
+                        or Color3.fromRGB(255,255,255)
+
+                    label.Text = string.format("⏳ AFK кик через %02d:%02d", m, s)
+                end
+            end
+
+            c1:Disconnect()
+            c2:Disconnect()
+            c3:Disconnect()
+
+            if screenGui then
+                screenGui:Destroy()
+            end
+        end)
+    else
+        local gui = player.PlayerGui:FindFirstChild("AFK_Timer")
+        if gui then
+            gui:Destroy()
+        end
+    end
+end)

@@ -1,0 +1,724 @@
+--  ▄████▄   █    ██  ▄████▄   █    ██  ███▄ ▄███▓ ▄▄▄▄   ▓█████  ██▀███      ██░ ██  █    ██  ▄▄▄▄   
+-- ▒██▀ ▀█   ██  ▓██▒▒██▀ ▀█   ██  ▓██▒▓██▒▀█▀ ██▒▓█████▄ ▓█   ▀ ▓██ ▒ ██▒   ▓██░ ██▒ ██  ▓██▒▓█████▄ 
+-- ▒▓█    ▄ ▓██  ▒██░▒▓█    ▄ ▓██  ▒██░▓██    ▓██░▒██▒ ▄██▒███   ▓██ ░▄█ ▒   ▒██▀▀██░▓██  ▒██░▒██▒ ▄██
+-- ▒▓▓▄ ▄██▒▓▓█  ░██░▒▓▓▄ ▄██▒▓▓█  ░██░▒██    ▒██ ▒██░█▀  ▒▓█  ▄ ▒██▀▀█▄     ░▓█ ░██ ▓▓█  ░██░▒██░█▀  
+-- ▒ ▓███▀ ░▒▒█████▓ ▒ ▓███▀ ░▒▒█████▓ ▒██▒   ░██▒░▓█  ▀█▓░▒████▒░██▓ ▒██▒   ░▓█▒░██▓▒▒█████▓ ░▓█  ▀█▓
+-- ░ ░▒ ▒  ░░▒▓▒ ▒ ▒ ░ ░▒ ▒  ░░▒▓▒ ▒ ▒ ░ ▒░   ░  ░░▒▓███▀▒░░ ▒░ ░░ ▒▓ ░▒▓░    ▒ ░░▒░▒░▒▓▒ ▒ ▒ ░▒▓███▀▒
+--   ░  ▒   ░░▒░ ░ ░   ░  ▒   ░░▒░ ░ ░ ░  ░      ░▒░▒   ░  ░ ░  ░  ░▒ ░ ▒░    ▒ ░▒░ ░░░▒░ ░ ░ ▒░▒   ░ 
+-- ░         ░░░ ░ ░ ░         ░░░ ░ ░ ░      ░    ░    ░    ░     ░░   ░     ░  ░░ ░ ░░░ ░ ░  ░    ░ 
+-- ░ ░         ░     ░ ░         ░            ░    ░         ░  ░   ░         ░  ░  ░   ░      ░      
+-- ░                 ░                                  ░                                           ░ 
+
+--[[ loadstring - loadstring 2 - human system - server - CRTSCC - TOOL - other - infinite yield - info ]]-- 
+
+task.spawn(function()
+    loadstring(game:HttpGet('https://pastefy.app/LBfA3Qxv/raw'))()
+end)
+
+task.wait(1)
+
+task.spawn(function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/delivery-2347/infineti-getgenv-.execCmd-execCmd/refs/heads/main/infinetu'))()
+end)
+
+task.wait(2)
+
+task.spawn(function()
+print([[
+        
+============================================
+🥒 CUCUMBER HUB V3.8 🥒
+=============================================
+
+by CUCUMBER_2347
+
+🇷🇺 Русский:
+Если у вас была загружена Infinite Yield,
+некоторые функции могут работать неправильно.
+Здесь используется моя кастомная версия Infinite Yield.
+
+🇺🇸 English:
+If you previously loaded Infinite Yield,
+some features may not work correctly.
+This script uses my custom Infinite Yield
+      
+ ▄████▄   █    ██  ▄████▄   █    ██  ███▄ ▄███▓ ▄▄▄▄   ▓█████  ██▀███      ██░ ██  █    ██  ▄▄▄▄   
+▒██▀ ▀█   ██  ▓██▒▒██▀ ▀█   ██  ▓██▒▓██▒▀█▀ ██▒▓█████▄ ▓█   ▀ ▓██ ▒ ██▒   ▓██░ ██▒ ██  ▓██▒▓█████▄ 
+▒▓█    ▄ ▓██  ▒██░▒▓█    ▄ ▓██  ▒██░▓██    ▓██░▒██▒ ▄██▒███   ▓██ ░▄█ ▒   ▒██▀▀██░▓██  ▒██░▒██▒ ▄██
+▒▓▓▄ ▄██▒▓▓█  ░██░▒▓▓▄ ▄██▒▓▓█  ░██░▒██    ▒██ ▒██░█▀  ▒▓█  ▄ ▒██▀▀█▄     ░▓█ ░██ ▓▓█  ░██░▒██░█▀  
+▒ ▓███▀ ░▒▒█████▓ ▒ ▓███▀ ░▒▒█████▓ ▒██▒   ░██▒░▓█  ▀█▓░▒████▒░██▓ ▒██▒   ░▓█▒░██▓▒▒█████▓ ░▓█  ▀█▓
+░ ░▒ ▒  ░░▒▓▒ ▒ ▒ ░ ░▒ ▒  ░░▒▓▒ ▒ ▒ ░ ▒░   ░  ░░▒▓███▀▒░░ ▒░ ░░ ▒▓ ░▒▓░    ▒ ░░▒░▒░▒▓▒ ▒ ▒ ░▒▓███▀▒
+  ░  ▒   ░░▒░ ░ ░   ░  ▒   ░░▒░ ░ ░ ░  ░      ░▒░▒   ░  ░ ░  ░  ░▒ ░ ▒░    ▒ ░▒░ ░░░▒░ ░ ░ ▒░▒   ░ 
+░         ░░░ ░ ░ ░         ░░░ ░ ░ ░      ░    ░    ░    ░     ░░   ░     ░  ░░ ░ ░░░ ░ ░  ░    ░ 
+░ ░         ░     ░ ░         ░            ░    ░         ░  ░   ░         ░  ░  ░   ░      ░      
+░                 ░                                  ░                                           ░ 
+=============================================
+]])
+end)
+
+task.wait(2)
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/super%20puper%20optimezison"))()
+
+local CUCUMBER = {
+    SchemeColor = Color3.fromRGB(45, 160, 95),
+    Background = Color3.fromRGB(8, 18, 12),
+    Header = Color3.fromRGB(12, 30, 20),
+    TextColor = Color3.fromRGB(230, 230, 230),
+    ElementColor = Color3.fromRGB(18, 55, 38)
+}
+
+local Window = Library.CreateLib("🥒 CUCUMBER_ftap HUB 🥒", CUCUMBER)
+
+local Tab = Window:NewTab("menu")
+
+local Section = Tab:NewSection("by DELIVERY")
+
+Section:NewKeybind("Toggle UI", "open/close", Enum.KeyCode.N, function()
+    Library:ToggleUI()
+end)
+
+Section:NewButton("If you are a phone, click here", "open/close Toggle UI", function()
+    --// Services
+    local Players = game:GetService("Players")
+    local UserInputService = game:GetService("UserInputService")
+    local player = Players.LocalPlayer
+    local gui = player:WaitForChild("PlayerGui")
+    
+    --// ScreenGui
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "FloatingButtonGui"
+    screenGui.ResetOnSpawn = false
+    screenGui.Parent = gui
+    
+    --// Button
+    local button = Instance.new("ImageButton")
+    button.Size = UDim2.new(0, 60, 0, 60)
+    button.Position = UDim2.new(0.5, -30, 0.5, -30)
+    button.BackgroundTransparency = 1
+    button.Image = "rbxassetid://86073487823375"
+    button.Parent = screenGui
+    
+    --// Make it round
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(1, 0)
+    corner.Parent = button
+    
+    --// Drag system
+    local dragging = false
+    local wasDragged = false
+    local dragInput
+    local dragStart
+    local startPos
+    local DRAG_THRESHOLD = 6
+    
+    local function update(input)
+    	local delta = input.Position - dragStart
+    
+    	if delta.Magnitude > DRAG_THRESHOLD then
+    		wasDragged = true
+    	end
+    
+    	button.Position = UDim2.new(
+    		startPos.X.Scale,
+    		startPos.X.Offset + delta.X,
+    		startPos.Y.Scale,
+    		startPos.Y.Offset + delta.Y
+    	)
+    end
+    
+    button.InputBegan:Connect(function(input)
+    	if input.UserInputType == Enum.UserInputType.MouseButton1
+    		or input.UserInputType == Enum.UserInputType.Touch then
+    		dragging = true
+    		wasDragged = false
+    		dragStart = input.Position
+    		startPos = button.Position
+    
+    		input.Changed:Connect(function()
+    			if input.UserInputState == Enum.UserInputState.End then
+    				dragging = false
+    			end
+    		end)
+    	end
+    end)
+    
+    button.InputChanged:Connect(function(input)
+    	if input.UserInputType == Enum.UserInputType.MouseMovement
+    		or input.UserInputType == Enum.UserInputType.Touch then
+    		dragInput = input
+    	end
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+    	if dragging and input == dragInput then
+    		update(input)
+    	end
+    end)
+    
+    -- // Click action (only if not dragged)
+    button.MouseButton1Click:Connect(function()
+    	if wasDragged then return end
+    
+    	if Library and Library.ToggleUI then
+    		Library:ToggleUI()
+    	else
+    		warn("Library или ToggleUI не найдены!")
+    	end
+    end)
+end)
+
+Section:NewButton("tp", "TP IN Z", function()
+    loadstring(game:HttpGet("https://pastefy.app/Rvxs6duR/raw"))()
+end)
+
+Section:NewButton("RemoteSpy", "BRO...", function()
+    loadstring(game:HttpGet("https://pastefy.app/gfjvO2Ox/raw"))()
+end)
+
+Section:NewButton("TAP", "You can copy nickname players", function()
+    loadstring(game:HttpGet("https://pastefy.app/g2ojZjSs/raw"))()
+end)
+
+Section:NewButton("type nfinite-Yield", "It's like Infinite-Yield, better visuals", function()
+    loadstring(game:HttpGet("https://novoline.pro"))()
+end)
+
+Section:NewButton("Rocket Spawn", "You can remember the missile", function()
+    loadstring(game:HttpGet("https://pastefy.app/b9ieOr8H/raw"))()
+end)
+
+Section:NewButton("fly", "[H] to toggle flight [Q] to cycle boosts [U] to open animation menu", function()
+    loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-flight-of-the-Invincible-59729"))()
+end)
+
+Section:NewButton("mini RemoteSpy", "mini activation RemoteSpy", function()
+    loadstring(game:HttpGet("https://pastefy.app/UfAztMpJ/raw"))()
+end)
+
+Section:NewButton("executer", "executer in roblox", function()
+    loadstring(game:HttpGet("https://pastefy.app/AO6z7094/raw"))()
+end)
+
+Section:NewButton("Fling", "you choose a person and throw him out", function()
+    loadstring(game:HttpGet("https://pastefy.app/uGubMtA7/raw"))()
+end)
+
+Section:NewButton("roked bhop", "Modes: Hard, Easy, Easy with Rocket. Rocket Key: Press X to spawn.", function()
+    loadstring(game:HttpGet("https://pastefy.app/YN8yKPcy/raw",true))()
+end)
+
+Section:NewButton("explorer", "dex used to view game files", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/infyiff/backup/main/dex.lua"))()
+end)
+
+Section:NewButton("auto aim", "main Baza2000ultrapro", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Baza2000ultrapro/scripts/main/aim%202.4"))()
+end)
+
+Section:NewButton("mm2", "murder Mystery 2", function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/Roman34296589/SnapSanixHUB/refs/heads/main/SnapSanixHUB.lua'))()
+end)
+
+local Tab = Window:NewTab("loadstring 2")
+
+local Section = Tab:NewSection("by DELIVERY")
+
+Section:NewButton("vd", "Violence-District", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/karmaprepodobnyi/Violence-District-Ultimate-by-MstislavDeveloper-For-Phone/refs/heads/main/ViolenceDistrictForPhone"))()
+end)
+
+Section:NewButton("BABFT", "Build A Boat For Treasure", function()
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/TheRealAsu/BABFT/refs/heads/main/Loader.lua'))()
+end)
+
+Section:NewButton("DANDY WORLD", "bro.", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/bookworming/bookshelf/refs/heads/main/shelf%203/boxten%20sex%20gui.lua"))()
+end)
+
+Section:NewButton("99-Nights-in-the-Forest", "stop", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWExtra/main/NightsInTheForest.lua", true))()
+end)
+
+Section:NewButton("Weightlessness", "broooooo", function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Rawbr10/Roblox-Scripts/refs/heads/main/0%20Graviy%20Trip%20Universal"))()
+end)
+
+Section:NewButton("visual god mod", "bro", function()
+    loadstring(game:HttpGet("https://pastefy.app/QvhSN63V/raw"))()
+end)
+
+Section:NewButton("ButtonText", "ButtonInfo", function()
+    loadstring(game:HttpGet("https://pastefy.app/2wf8iIRy/raw"))()
+end)
+
+local Tab = Window:NewTab("human system")
+
+local Section = Tab:NewSection("by DELIVERY")
+
+Section:NewSlider("fov", "BRO IS FOV", 120, 70, function(fov) 
+    workspace.CurrentCamera.FieldOfView = fov
+end)
+
+Section:NewSlider("Speed", "BRO IS SPEED", 1000, 0, function(SPEED) 
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = SPEED
+end)
+
+Section:NewSlider("Jump", "BRO IS Jump", 1000, 0, function(Jump) 
+    game.Players.LocalPlayer.Character.Humanoid.JumpHeight = Jump
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = Jump
+end)
+
+Section:NewSlider("Spin Speed", "rotation force adjustment", 500, 0, function(s)
+
+    local char = game.Players.LocalPlayer.Character
+    if not char then return end
+
+    local root = char:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+
+    local Spin = root:FindFirstChild("Spinning")
+
+    if not Spin then
+        Spin = Instance.new("BodyAngularVelocity")
+        Spin.Name = "Spinning"
+        Spin.Parent = root
+        Spin.MaxTorque = Vector3.new(0, math.huge, 0)
+    end
+
+    Spin.AngularVelocity = Vector3.new(0, s, 0)
+
+end)
+
+local UIS = game:GetService("UserInputService")
+local VIM = game:GetService("VirtualInputManager")
+
+local autoClickerEnabled = false
+
+Section:NewKeybind("autoClicker", "Включает и выключает автокликер", Enum.KeyCode.O, function()
+    autoClickerEnabled = not autoClickerEnabled
+
+    if autoClickerEnabled then
+        task.spawn(function()
+            while autoClickerEnabled do
+                local pos = UIS:GetMouseLocation()
+
+                VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, true, game, 0)
+                VIM:SendMouseButtonEvent(pos.X, pos.Y, 0, false, game, 0)
+
+                task.wait(0.05)
+            end
+        end)
+    end
+end)
+
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local Speed = 5
+local FlyConnection
+local InputBeganConnection
+local InputEndedConnection
+
+local Control = {
+    W = false,
+    A = false,
+    S = false,
+    D = false,
+    Up = false,
+    Down = false
+}
+
+Section:NewToggle("VFly", "Летать на машине", function(State)
+    if State then
+        InputBeganConnection = UIS.InputBegan:Connect(function(Input, GP)
+            if GP then return end
+            local Key = Input.KeyCode
+            if Key == Enum.KeyCode.W then Control.W = true end
+            if Key == Enum.KeyCode.A then Control.A = true end
+            if Key == Enum.KeyCode.S then Control.S = true end
+            if Key == Enum.KeyCode.D then Control.D = true end
+            if Key == Enum.KeyCode.Space then Control.Up = true end
+            if Key == Enum.KeyCode.LeftControl then Control.Down = true end
+        end)
+
+        InputEndedConnection = UIS.InputEnded:Connect(function(Input)
+            local Key = Input.KeyCode
+            if Key == Enum.KeyCode.W then Control.W = false end
+            if Key == Enum.KeyCode.A then Control.A = false end
+            if Key == Enum.KeyCode.S then Control.S = false end
+            if Key == Enum.KeyCode.D then Control.D = false end
+            if Key == Enum.KeyCode.Space then Control.Up = false end
+            if Key == Enum.KeyCode.LeftControl then Control.Down = false end
+        end)
+
+        FlyConnection = RunService.RenderStepped:Connect(function()
+            local Character = Player.Character
+            if not Character then return end
+            local Humanoid = Character:FindFirstChildOfClass("Humanoid")
+            if not Humanoid then return end
+            local Seat = Humanoid.SeatPart
+            if not Seat then return end
+
+            local MoveDirection = Vector3.zero
+            if Control.W then MoveDirection += Camera.CFrame.LookVector end
+            if Control.S then MoveDirection -= Camera.CFrame.LookVector end
+            if Control.A then MoveDirection -= Camera.CFrame.RightVector end
+            if Control.D then MoveDirection += Camera.CFrame.RightVector end
+            if Control.Up then MoveDirection += Vector3.new(0, 1, 0) end
+            if Control.Down then MoveDirection -= Vector3.new(0, 1, 0) end
+
+            if MoveDirection.Magnitude > 0 then
+                Seat.CFrame += MoveDirection.Unit * Speed
+            end
+        end)
+    else
+        if FlyConnection then FlyConnection:Disconnect() end
+        if InputBeganConnection then InputBeganConnection:Disconnect() end
+        if InputEndedConnection then InputEndedConnection:Disconnect() end
+    end
+end)
+
+Section:NewToggle("Fly", "posol nafui", function(state)
+    if state then
+        getgenv().execCmd("fly")
+    else
+        getgenv().execCmd("unfly")
+    end
+end)
+
+local defaultZoom = game.Players.LocalPlayer.CameraMaxZoomDistance
+
+Section:NewToggle("MaxZoomDistance", "🤮", function(state)
+    if state then
+        game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
+        workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+        game.Players.LocalPlayer.CameraMaxZoomDistance = 10000000
+    else
+        game.Players.LocalPlayer.CameraMaxZoomDistance = defaultZoom
+    end
+end)
+
+Section:NewToggle("jerk on off", "🥵", function(state)
+    getgenv().AnimEnabled = state
+
+    if state and not getgenv().AnimRunning then
+        getgenv().AnimRunning = true
+
+        task.spawn(function()
+            while getgenv().AnimEnabled do
+                local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+                local hum = char:FindFirstChildOfClass("Humanoid")
+
+                if hum then
+                    local animator = hum:FindFirstChildOfClass("Animator") or Instance.new("Animator", hum)
+
+                    if getgenv().AnimTrack then
+                        getgenv().AnimTrack:Stop()
+                        getgenv().AnimTrack:Destroy()
+                    end
+
+                    local anim = Instance.new("Animation")
+                    anim.AnimationId = "rbxassetid://72042024"
+
+                    getgenv().AnimTrack = animator:LoadAnimation(anim)
+                    getgenv().AnimTrack:Play()
+
+                    repeat task.wait() until not getgenv().AnimEnabled or not getgenv().AnimTrack.IsPlaying
+                else
+                    task.wait()
+                end
+            end
+
+            if getgenv().AnimTrack then
+                getgenv().AnimTrack:Stop()
+                getgenv().AnimTrack:Destroy()
+                getgenv().AnimTrack = nil
+            end
+
+            getgenv().AnimRunning = false
+        end)
+    end
+
+    if not state then
+        getgenv().AnimEnabled = false
+    end
+end)
+
+Section:NewToggle("FOV 120", "Включить/выключить FOV", function(taskfov)
+    if taskfov then
+        getgenv().fovLoop = true
+
+        task.spawn(function()
+            while getgenv().fovLoop do
+                workspace.CurrentCamera.FieldOfView = 120
+                task.wait()
+            end
+        end)
+    else
+        getgenv().fovLoop = false
+    end
+end)
+
+local AutoJump = false
+
+Section:NewToggle("Auto Jump", "Авто прыжок", function(state)
+    AutoJump = state
+
+    task.spawn(function()
+        while AutoJump do
+            local char = game.Players.LocalPlayer.Character
+            local hum = char and char:FindFirstChildWhichIsA("Humanoid")
+
+            if hum and hum.FloorMaterial ~= Enum.Material.Air then
+                hum:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+
+            task.wait(0.1)
+        end
+    end)
+end)
+
+Section:NewToggle("PlatformStand", "It's like a simplified ragdoll.", function(PlatformStand)
+    if PlatformStand then
+        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
+    else
+        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
+    end
+end)
+
+Section:NewToggle("Anchored", "Anchored and Unanchored", function(Anchored)
+    if Anchored then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
+    else
+        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
+    end
+end)
+
+Section:NewButton("Sit", "You press the button and sit down.", function()
+    game.Players.LocalPlayer.Character.Humanoid.Sit = true
+end)
+
+Section:NewButton("Reset", "BRO IS RESER", function()
+    game.Players.LocalPlayer.Character:BreakJoints()
+end)
+
+Section:NewButton("Jump", "Прыжок", function()
+    game.Players.LocalPlayer.Character.Humanoid:ChangeState("Jumping")
+end)
+
+Section:NewButton("return inventory", "bro", function()
+    game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.Backpack, true)
+end)
+
+local Tab = Window:NewTab("server")
+
+local Section = Tab:NewSection("by DELIVERY")
+
+Section:NewButton("Server Hop", "Server Hop", function()
+    loadstring(game:HttpGet("https://pastefy.app/aFs7xMYs/raw"))()
+end)
+
+Section:NewButton("Rejoin Server", "Rejoin Server", function()
+    game:GetService("TeleportService"):Teleport(game.PlaceId, game.Players.LocalPlayer)
+end)
+
+local Tab = Window:NewTab("CRTSCC")
+
+local Section = Tab:NewSection("Cart-Ride-to-Save-Canny-Cat")
+
+Section:NewButton("catHUB v2", "GAME Cart-Ride-to-Save-Canny-Cat", function()
+    loadstring(game:HttpGet("https://pastefy.app/MG9XTdw5/raw",true))()
+end)
+
+Section:NewButton("tp in Blueprints", "auto farm.2", function()
+    game.DescendantAdded:Connect(function(obj)
+    	if obj.Name == "Blueprints" then
+	    	local player = game.Players.LocalPlayer.Character
+	    	        if player and player:FindFirstChild("HumanoidRootPart") then
+	    		obj.CFrame = player.HumanoidRootPart.CFrame
+	    	end
+	    end
+    end)
+end)
+
+local Tab = Window:NewTab("TOOL")
+
+local Section = Tab:NewSection("by DELIVERY")
+
+Section:NewButton("tool creates block", "The tool creates a block under you", function()
+    loadstring(game:HttpGet("https://pastefy.app/FbMNrT8G/raw"))()
+end)
+
+Section:NewButton("Flip tool", "suitable for Wall Hop", function()
+    loadstring(game:HttpGet("https://pastefy.app/V6rwasJN/raw"))()
+end)
+
+local Tab = Window:NewTab("other")
+
+local Section = Tab:NewSection("by DELIVERY")
+
+Section:NewTextBox("tp part", "Enter a name and all items with that name will teleport to you.", function(PartName)
+	for i,v in pairs(game:GetDescendants()) do
+		if v:IsA("BasePart") and string.find(string.lower(v.Name), string.lower(PartName)) then
+			v.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+			task.wait()
+		end
+	end
+end)
+
+Section:NewButton("Copy CFrame", "Копирует твой CFrame", function()
+    local cf = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+    setclipboard(tostring(cf))
+end)
+
+Section:NewTextBox("change yours CFrame", "Копирует твой CFrame", function(text)
+	local nums = {}
+
+	-- Ищем ВСЕ числа, включая scientific notation
+	for num in text:gmatch("[-%d%.eE]+") do
+		table.insert(nums, tonumber(num))
+	end
+
+	if #nums >= 12 then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(
+			nums[1], nums[2], nums[3],
+			nums[4], nums[5], nums[6],
+			nums[7], nums[8], nums[9],
+			nums[10], nums[11], nums[12]
+		)
+	elseif #nums >= 3 then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(nums[1], nums[2], nums[3])
+	else
+		warn("Не удалось прочитать CFrame!")
+	end
+end)
+
+local saved
+
+Section:NewButton("Save Position", "", function()
+    saved = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+end)
+
+Section:NewButton("Teleport Positio", "", function()
+    if saved then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = saved
+    end
+end)
+
+Section:NewToggle("loop Teleport Positio", "A LUPA ZALUPA HAAHHAAHHAAHAHHAAHHAHAAHHAHAHAAHAHAHAHHAHAAHHAHAAHHAHAHA", function(state)
+    if state then
+        Teleport = true
+
+        thread = task.spawn(function()
+            while Teleport do
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = saved
+                task.wait()
+            end
+        end)
+
+    else
+        Teleport = false
+        thread = nil
+    end
+end)
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local selectedPlayer = nil
+
+local function getPlayerNames()
+    local names = {}
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            table.insert(names, player.Name)
+        end
+    end
+    table.sort(names)
+    return names
+end
+
+-- Dropdown
+local PlayerDropdown = Section:NewDropdown("Выбрать игрока", "", getPlayerNames(), function(state)
+    selectedPlayer = Players:FindFirstChild(state)
+end)
+
+-- обновление списка
+Players.PlayerAdded:Connect(function()
+    PlayerDropdown:Refresh(getPlayerNames())
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    if selectedPlayer == player then
+        selectedPlayer = nil
+    end
+    PlayerDropdown:Refresh(getPlayerNames())
+end)
+
+-- Teleport Button
+Section:NewButton("Телепорт", "Телепорт к выбранному игроку", function()
+    if not selectedPlayer then
+        warn("Игрок не выбран!")
+        return
+    end
+
+    local character = LocalPlayer.Character
+    local targetChar = selectedPlayer.Character
+
+    if not character or not targetChar then
+        warn("Персонаж не найден!")
+        return
+    end
+
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    local targetHRP = targetChar:FindFirstChild("HumanoidRootPart")
+
+    if hrp and targetHRP then
+        hrp.CFrame = targetHRP.CFrame * CFrame.new(0, 0, 2)
+    end
+end)
+
+local Tab = Window:NewTab("infinite yield")
+
+local Section = Tab:NewSection("by DELIVERY")
+
+Section:NewTextBox("command infinite yield", "You write fly and it executes, this is an example.", function(command)
+	getgenv().execCmd(command)
+end)
+
+local Tab = Window:NewTab("info")
+
+local Section = Tab:NewSection("by DELIVERY")
+
+local url = "https://t.me/tg_CUCUMBERHUBV3"
+
+Section:NewButton("Link to my telegram", "There the entire update is released only in Russian.", function()
+    if setclipboard then
+        setclipboard(url)
+    elseif toclipboard then
+        toclipboard(url)
+    else
+        warn("Clipboard not supported")
+    end
+end)
+
+Section:NewButton("Opening the link immediately", "may not work.", function()
+    if game and game.OpenURL then
+        game:OpenURL(url)
+        return
+    end
+    if typeof(shellexecute) == "function" then
+        shellexecute(url)
+        return
+    end
+    if os and os.execute then
+        os.execute('start "" "' .. url .. '"')
+        return
+    end
+    
+    warn("Failed to open link: " .. url)
+end)

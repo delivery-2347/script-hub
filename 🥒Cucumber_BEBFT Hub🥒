@@ -10,7 +10,6 @@ local CUCUMBER = {
 
 local Window = Library.CreateLib("Cucumber_BEBFT Hub", CUCUMBER)
 
--- 🔥 ВОТ ЭТО ТЫ ЗАБЫЛ
 local Tab = Window:NewTab("mein")
 local Section = Tab:NewSection("Main")
 
@@ -19,120 +18,122 @@ local VIM = game:GetService("VirtualInputManager")
 
 local player = Players.LocalPlayer
 
-------------------------------------------------
--- 🔥 FARM
-------------------------------------------------
+Section:NewKeybind("Toggle UI", "open/close", Enum.KeyCode.B, function()
+    Library:ToggleUI()
+end)
 
 local farmTIME = 1
 local Enabled = false
 
-Section:NewSlider("delay in teleports", "soso", 10, 2, function(timeFARM)
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local Part
+local Connection
+local charConn
+
+local runId = 0
+
+Section:NewSlider("delay in teleports", "soso", 10, 1, function(timeFARM)
     farmTIME = timeFARM
 end)
 
-local Enabled = false
-local Part
-local Connection
-
 Section:NewToggle("auto farm TP", "", function(state)
     Enabled = state
-     
-    -- ❌ выключение
+
+    runId += 1
+    local myId = runId
+
+    -- ❌ OFF
     if not state then
+
         if Connection then
             Connection:Disconnect()
             Connection = nil
         end
-    
+
         if Part then
             Part:Destroy()
             Part = nil
         end
-    
+
+        if charConn then
+            charConn:Disconnect()
+            charConn = nil
+        end
+
         return
     end
-    
-    -- ✅ включение AIRWALK
+
+    -- ✅ AIRWALK (ОСТАВИЛ КАК ТЫ СКАЗАЛ)
     if Part then
         Part:Destroy()
     end
-     
+
     Part = Instance.new("Part")
     Part.Size = Vector3.new(4,1,4)
     Part.Anchored = true
     Part.CanCollide = true
     Part.Parent = workspace
-      
-    getgenv().AirWalkPart = Part
-     
+
     Connection = game:GetService("RunService").Heartbeat:Connect(function()
-        local Character = game.Players.LocalPlayer.Character
+        local Character = player.Character
         local Root = Character and Character:FindFirstChild("HumanoidRootPart")
-         
+
         if Root and Part then
             Part.Position = Root.Position + Vector3.new(0,-3.5,0)
         end
     end)
-    
- -- 🔁 TELEPORT LOOP
-    local Players = game:GetService("Players")
-    local player = Players.LocalPlayer
-    
+
+    -- 🔁 TELEPORT (RESPAWN-SAFE + RESET GATE)
     local function tp()
         local Character = player.Character or player.CharacterAdded:Wait()
         local Root = Character:WaitForChild("HumanoidRootPart")
-    
-        Root.CFrame = CFrame.new(-105.167564, 113.341957, 1368.97583, 0.0176027305, 0.0415863991, -0.998979867, -8.69479155e-09, 0.99913466, 0.0415928438, 0.999845088, -0.000732138928, 0.0175874978)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-90.1123886, 113.342079, 2142.78418, 0.0193490088, -0.0296126213, -0.999374151, -8.65737615e-09, 0.99956131, -0.0296181664, 0.999812782, 0.00057309086, 0.0193405207)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(75.1767349, 113.342064, 2914.53857, 0.0193497986, -0.0309557263, -0.999333441, -8.62645777e-09, 0.9995206, -0.0309615228, 0.999812782, 0.00059910788, 0.0193405226)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-110.502899, 115.149529, 3678.08765, -0.00344295125, 0.0456167087, -0.998953104, -9.10376396e-09, 0.998959005, 0.0456169806, 0.999994099, 0.000157066126, -0.00343936658)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-113.162552, 115.149529, 4449.93994, -0.00345250522, 0.0456166901, -0.998953044, 9.05411035e-09, 0.998959005, 0.045616962, 0.99999404, 0.000157483766, -0.00344891171)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-115.828888, 115.149529, 5222.73584, -0.00345248799, 0.0456167087, -0.998953044, -9.02760089e-09, 0.998959005, 0.0456169806, 0.99999404, 0.000157501097, -0.00344889355)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-118.45929, 115.149529, 5985.1167, -0.00345248752, 0.0456166901, -0.998953044, -8.91622065e-09, 0.998959005, 0.045616962, 0.99999404, 0.000157500908, -0.00344889308)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-121.168747, 115.149529, 6770.41064, -0.00345248799, 0.0456166975, -0.998953044, -9.00879904e-09, 0.998959005, 0.0456169695, 0.99999404, 0.000157501039, -0.00344889355)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-126.530991, 75.1733704, 7531.75, -0.0104803331, 0.00665896572, -0.999922931, 8.66948557e-09, 0.999977827, 0.00665933127, 0.999945104, 6.97833384e-05, -0.0104801003)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-90.3094559, 77.1855392, 8295.91406, -0.020726366, 0.0563624166, -0.998195231, -9.7489643e-09, 0.998409688, 0.0563745275, 0.999785185, 0.00116844883, -0.0206934046)
-        task.wait(1)
-    
-        Root.CFrame = CFrame.new(-56.0303154, -359.162079, 9487.84277, -0.268673837, 0.184169471, -0.945460737, -1.61827902e-08, 0.98155117, 0.19119966, 0.963231206, 0.05137036, -0.263717115)
+
+        local function step(cf)
+            if not Enabled or runId ~= myId then return false end
+            Root.CFrame = cf
+            task.wait(farmTIME)
+            return true
+        end
+
+        if not step(CFrame.new(-105.167564,113.341957,1368.97583)) then return end
+        if not step(CFrame.new(-90.1123886,113.342079,2142.78418)) then return end
+        if not step(CFrame.new(75.1767349,113.342064,2914.53857)) then return end
+        if not step(CFrame.new(-110.502899,115.149529,3678.08765)) then return end
+        if not step(CFrame.new(-113.162552,115.149529,4449.93994)) then return end
+        if not step(CFrame.new(-115.828888,115.149529,5222.73584)) then return end
+        if not step(CFrame.new(-118.45929,115.149529,5985.1167)) then return end
+        if not step(CFrame.new(-121.168747,115.149529,6770.41064)) then return end
+        if not step(CFrame.new(-126.530991,75.1733704,7531.75)) then return end
+        if not step(CFrame.new(-90.3094559,77.1855392,8295.91406)) then return end
+        if not step(CFrame.new(-56.0303154,-359.162079,9487.84277)) then return end
     end
-    
-    -- 🔁 первый запуск
-    task.spawn(tp)
-    
-    -- 🔁 после смерти
-    player.CharacterAdded:Connect(function()
-        task.wait(1)
-        task.spawn(tp)
+
+    -- 🔁 LOOP (СТАРТ ТОЛЬКО ПОСЛЕ RESPAWN)
+    task.spawn(function()
+        while Enabled and runId == myId do
+
+            tp()
+
+            -- 💀 ВАЖНО: ждём РЕСЕТ ПЕРЕД СЛЕДУЮЩИМ ЦИКЛОМ
+            if not Enabled or runId ~= myId then return end
+            player.CharacterAdded:Wait()
+
+        end
     end)
+
+    -- 🔁 safety respawn handler
+    charConn = player.CharacterAdded:Connect(function()
+        if not Enabled or runId ~= myId then return end
+        task.wait(0.1)
+    end)
+
 end)
-
-
-------------------------------------------------
--- 🔥 AUTO E
-------------------------------------------------
 
 local AutoE = false
 
-Section:NewToggle("anti afk", "", function(state)
+Section:NewToggle("anti afk", "ezz", function(state)
     AutoE = state
 end)
 
@@ -151,10 +152,6 @@ task.spawn(function()
         end
     end
 end)
-
-------------------------------------------------
--- 🔥 AFK TIMER
-------------------------------------------------
 
 local AFKTimerEnabled = false
 

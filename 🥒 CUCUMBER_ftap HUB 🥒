@@ -1015,7 +1015,7 @@ local loopKickBlobActive = false
 local loopKickBlobTask = nil
 local kickpleirs = nil
 
-local function allSitOnBlobman()
+local function SitOnBlobman()
     local plr = game.Players.LocalPlayer
     local char = plr.Character
     local hrp = char and char:FindFirstChild("HumanoidRootPart")
@@ -1025,71 +1025,76 @@ local function allSitOnBlobman()
         return false
     end
 
-    -- 🔍 ищем свободный Blobman (никто не сидит)
+    local folderName = plr.Name .. "SpawnedInToys"
+    local folder = workspace:FindFirstChild(folderName)
+
     local chosenBlob = nil
-    local closestDist = math.huge
 
-    for _, obj in ipairs(workspace:GetDescendants()) do
-        if obj.Name == "CreatureBlobman" then
-            local seat = obj:FindFirstChild("VehicleSeat")
-            local root = obj:FindFirstChild("HumanoidRootPart") or obj.PrimaryPart
+    print("Ищу Blobman...")
 
-            if seat and root then
-                -- ❌ если на сиденье уже кто-то сидит — пропускаем
-                if not seat.Occupant then
-                    local dist = (hrp.Position - root.Position).Magnitude
+    if folder then
+        for _, obj in ipairs(folder:GetChildren()) do
+            if obj.Name == "CreatureBlobman" then
+                local seat = obj:FindFirstChild("VehicleSeat")
 
-                    if dist < closestDist then
-                        closestDist = dist
-                        chosenBlob = obj
-                    end
+                if seat and not seat.Occupant then
+                    chosenBlob = obj
+                    print("Найден:", chosenBlob)
+                    break
                 end
             end
         end
     end
 
-    -- 📦 если нет свободных Blobman — спавним новый
     if not chosenBlob then
-        game.ReplicatedStorage.MenuToys.SpawnToyRemoteFunction:InvokeServer(
-            "CreatureBlobman",
-            hrp.CFrame,
-            Vector3.zero
-        )
-    
-        -- ⏳ даём серверу время создать объект
+        print("Спавню Blobman...")
+
+        pcall(function()
+            game.ReplicatedStorage.MenuToys.SpawnToyRemoteFunction:InvokeServer(
+                "CreatureBlobman",
+                hrp.CFrame,
+                Vector3.zero
+            )
+        end)
+
         local t = tick()
+
         repeat
             task.wait()
-    
-            for _, obj in ipairs(workspace:GetDescendants()) do
-                if obj.Name == "CreatureBlobman" then
-                    local seat = obj:FindFirstChild("VehicleSeat")
-                    if seat then
-                        chosenBlob = obj
-                        break
-                    end
-                end
+
+            folder = workspace:FindFirstChild(folderName)
+
+            if folder then
+                chosenBlob = folder:FindFirstChild("CreatureBlobman")
             end
-    
+
         until chosenBlob or tick() - t > 5
     end
 
     if not chosenBlob then
+        warn("Blobman не найден")
         return false
     end
 
     local seat = chosenBlob:FindFirstChild("VehicleSeat")
+
     if not seat then
+        warn("VehicleSeat не найден")
         return false
     end
 
-    -- 🪑 посадка
+    print("Пытаюсь сесть...")
+
     local t = tick()
+
     repeat
         hrp.CFrame = seat.CFrame + Vector3.new(0, 1, 0)
         seat:Sit(hum)
         task.wait()
+
     until hum.SeatPart == seat or tick() - t > 5
+
+    print("Сел:", hum.SeatPart == seat)
 
     return hum.SeatPart == seat
 end
@@ -1105,13 +1110,10 @@ local function IsSittingOnBlob()
 end
 
 local function LoopKickBlobFunction(targetName)
+    print("LoopKickBlobFunction стартовала")
     if loopKickBlobTask then
         loopKickBlobTask:Disconnect()
         loopKickBlobTask = nil
-    end
-
-    if not IsSittingOnBlob() then
-        allSitOnBlobman()
     end
 
     local target = Players:FindFirstChild(targetName)
@@ -1250,15 +1252,31 @@ Players.PlayerRemoving:Connect(function(p)
 end)
 
 Section:NewToggle("Loop Kick (Grab+Blob)", "64 61 20 69 64 69 20 6e 61 66 75 69 20", function(state)
-    loopKickBlobActive = state
-    if state then
-        if not kickpleirs then loopKickBlobActive = false; return end
-        if not IsSittingOnBlob() then loopKickBlobActive = false; return end
-        LoopKickBlobFunction(kickpleirs.Name)
-    else
+if state then
+    if not kickpleirs then
         loopKickBlobActive = false
-        if loopKickBlobTask then loopKickBlobTask:Disconnect(); loopKickBlobTask = nil end
+        return
     end
+
+    -- 🪑 СНАЧАЛА посадка
+    local ok = SitOnBlobman()
+    if not ok then
+        warn("Не удалось сесть на Blobman")
+        loopKickBlobActive = false
+        return
+    end
+
+    -- 🚀 только потом включаем кик
+    loopKickBlobActive = true
+    LoopKickBlobFunction(kickpleirs.Name)
+else
+    loopKickBlobActive = false
+
+    if loopKickBlobTask then
+        loopKickBlobTask:Disconnect()
+        loopKickBlobTask = nil
+    end
+end
 end)
 
 local Tab = Window:NewTab("esp")

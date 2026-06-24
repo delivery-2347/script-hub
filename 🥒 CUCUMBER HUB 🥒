@@ -490,14 +490,6 @@ Section:NewToggle("PlatformStand", "It's like a simplified ragdoll.", function(P
     end
 end)
 
-Section:NewToggle("Anchored", "Anchored and Unanchored", function(Anchored)
-    if Anchored then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = true
-    else
-        game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = false
-    end
-end)
-
 Section:NewButton("Sit", "You press the button and sit down.", function()
     game.Players.LocalPlayer.Character.Humanoid.Sit = true
 end)

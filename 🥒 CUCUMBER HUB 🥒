@@ -9,7 +9,7 @@
 -- ░ ░         ░     ░ ░         ░            ░    ░         ░  ░   ░         ░  ░  ░   ░      ░      
 -- ░                 ░                                  ░                                           ░ 
 
---[[ loadstring - loadstring 2 - human system - server - CRTSCC - TOOL - other - infinite yield - info ]]-- 
+--[[ loadstring - loadstring 2 - human system - server - CRTSCC - TOOL - tp - infinite yield - info ]]-- 
 
 task.spawn(function()
     loadstring(game:HttpGet('https://pastefy.app/LBfA3Qxv/raw'))()
@@ -18,7 +18,7 @@ end)
 task.wait(1)
 
 task.spawn(function()
-    loadstring(game:HttpGet('https://raw.githubusercontent.com/delivery-2347/infineti-getgenv-.execCmd-execCmd/refs/heads/main/infinetu'))()
+    loadstring(game:HttpGet('http://raw.githubusercontent.com/delivery-2347/infineti-getgenv-.execCmd-execCmd/refs/heads/main/infinetu.Lua'))()
 end)
 
 task.wait(2)
@@ -56,9 +56,59 @@ This script uses my custom Infinite Yield
 ]])
 end)
 
+local function tp()
+    local Players = game:GetService("Players")
+    local TweenService = game:GetService("TweenService")
+
+    local LocalPlayer = Players.LocalPlayer
+    local Mouse = LocalPlayer:GetMouse()
+
+    local tpspeed = 0.2
+    local char = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    if not Mouse.Target then
+        return
+    end
+
+    -- Куда указывает курсор
+    local pos = Mouse.Hit.Position + Vector3.new(0, 3, 0)
+
+    -- Останавливаем физику перед TP
+    hrp.AssemblyLinearVelocity = Vector3.zero
+    hrp.AssemblyAngularVelocity = Vector3.zero
+
+    -- Временно отключаем столкновения
+    hrp.CanCollide = false
+
+    -- Пла  вный телепорт
+    local tween = TweenService:Create(
+        hrp,
+        TweenInfo.new(
+            tpspeed, -- скорость
+            Enum.EasingStyle.Linear,
+            Enum.EasingDirection.Out
+        ),
+        {
+            CFrame = CFrame.new(pos)
+        }
+    )
+
+    tween:Play()
+    tween.Completed:Wait()
+
+    -- Ещё раз сбрасываем скорость
+    hrp.AssemblyLinearVelocity = Vector3.zero
+    hrp.AssemblyAngularVelocity = Vector3.zero
+
+    task.wait(0.05)
+
+    hrp.CanCollide = true
+end
+
 task.wait(2)
 
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/w/refs/heads/main/super%20puper%20optimezison"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/zac019181-netizen/-/refs/heads/main/.W"))()
 
 local CUCUMBER = {
     SchemeColor = Color3.fromRGB(45, 160, 95),
@@ -68,7 +118,7 @@ local CUCUMBER = {
     ElementColor = Color3.fromRGB(18, 55, 38)
 }
 
-local Window = Library.CreateLib("🥒 CUCUMBER_ftap HUB 🥒", CUCUMBER)
+local Window = Library.CreateLib("🥒 CUCUMBER HUB 🥒", CUCUMBER)
 
 local Tab = Window:NewTab("menu")
 
@@ -402,14 +452,17 @@ Section:NewToggle("MaxZoomDistance", "🤮", function(state)
     end
 end)
 
-Section:NewToggle("jerk on off", "🥵", function(state)
-    getgenv().AnimEnabled = state
+local AnimEnabled = false
+local AnimRunning = false
 
-    if state and not getgenv().AnimRunning then
-        getgenv().AnimRunning = true
+Section:NewToggle("jerk on off", "🥵", function(state)
+    AnimEnabled = state
+
+    if state and not AnimRunning then
+        AnimRunning = true
 
         task.spawn(function()
-            while getgenv().AnimEnabled do
+            while AnimEnabled do
                 local char = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
                 local hum = char:FindFirstChildOfClass("Humanoid")
 
@@ -422,12 +475,12 @@ Section:NewToggle("jerk on off", "🥵", function(state)
                     end
 
                     local anim = Instance.new("Animation")
-                    anim.AnimationId = "rbxassetid://72042024"
+                    anim.AnimationId = not isR15 and "rbxassetid://72042024" or "rbxassetid://698251653"
 
                     getgenv().AnimTrack = animator:LoadAnimation(anim)
                     getgenv().AnimTrack:Play()
 
-                    repeat task.wait() until not getgenv().AnimEnabled or not getgenv().AnimTrack.IsPlaying
+                    repeat task.wait() until not AnimEnabled or not getgenv().AnimTrack.IsPlaying
                 else
                     task.wait()
                 end
@@ -439,27 +492,27 @@ Section:NewToggle("jerk on off", "🥵", function(state)
                 getgenv().AnimTrack = nil
             end
 
-            getgenv().AnimRunning = false
+            AnimRunning = false
         end)
     end
 
     if not state then
-        getgenv().AnimEnabled = false
+        AnimEnabled = false
     end
 end)
 
-Section:NewToggle("FOV 120", "Включить/выключить FOV", function(taskfov)
-    if taskfov then
-        getgenv().fovLoop = true
+local fovLoop = false
 
+Section:NewToggle("FOV 120", "Включить/выключить FOV", function(state)
+    fovLoop = state
+
+    if state then
         task.spawn(function()
-            while getgenv().fovLoop do
+            while fovLoop do
                 workspace.CurrentCamera.FieldOfView = 120
                 task.wait()
             end
         end)
-    else
-        getgenv().fovLoop = false
     end
 end)
 
@@ -482,12 +535,8 @@ Section:NewToggle("Auto Jump", "Авто прыжок", function(state)
     end)
 end)
 
-Section:NewToggle("PlatformStand", "It's like a simplified ragdoll.", function(PlatformStand)
-    if PlatformStand then
-        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = true
-    else
-        game.Players.LocalPlayer.Character.Humanoid.PlatformStand = false
-    end
+Section:NewToggle("Anchored", "Anchored posol nahui", function(stats)
+    game.Players.LocalPlayer.Character.HumanoidRootPart.Anchored = stats
 end)
 
 Section:NewButton("Sit", "You press the button and sit down.", function()
@@ -549,9 +598,13 @@ Section:NewButton("Flip tool", "suitable for Wall Hop", function()
     loadstring(game:HttpGet("https://pastefy.app/V6rwasJN/raw"))()
 end)
 
-local Tab = Window:NewTab("other")
+local Tab = Window:NewTab("tp")
 
 local Section = Tab:NewSection("by DELIVERY")
+
+Section:NewKeybind("autoClicker", "Включает и выключает автокликер", Enum.KeyCode.Z, function()
+    tp()
+end)
 
 Section:NewTextBox("tp part", "Enter a name and all items with that name will teleport to you.", function(PartName)
 	for i,v in pairs(game:GetDescendants()) do
@@ -601,27 +654,10 @@ Section:NewButton("Teleport Positio", "", function()
     end
 end)
 
-Section:NewToggle("loop Teleport Positio", "A LUPA ZALUPA HAAHHAAHHAAHAHHAAHHAHAAHHAHAHAAHAHAHAHHAHAAHHAHAAHHAHAHA", function(state)
-    if state then
-        Teleport = true
-
-        thread = task.spawn(function()
-            while Teleport do
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = saved
-                task.wait()
-            end
-        end)
-
-    else
-        Teleport = false
-        thread = nil
-    end
-end)
-
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 
-local selectedPlayer = nil
+local tppleirs = nil
 
 local function getPlayerNames()
     local names = {}
@@ -636,7 +672,7 @@ end
 
 -- Dropdown
 local PlayerDropdown = Section:NewDropdown("Выбрать игрока", "", getPlayerNames(), function(state)
-    selectedPlayer = Players:FindFirstChild(state)
+    tppleirs = Players:FindFirstChild(state)
 end)
 
 -- обновление списка
@@ -645,21 +681,21 @@ Players.PlayerAdded:Connect(function()
 end)
 
 Players.PlayerRemoving:Connect(function(player)
-    if selectedPlayer == player then
-        selectedPlayer = nil
+    if tppleirs == player then
+        tppleirs = nil
     end
     PlayerDropdown:Refresh(getPlayerNames())
 end)
 
 -- Teleport Button
-Section:NewButton("Телепорт", "Телепорт к выбранному игроку", function()
-    if not selectedPlayer then
+Section:NewButton("Teleport to the selected player", "Я бы мог сюда поставить объяснение но идти лучше учей английский чел", function()
+    if not tppleirs then
         warn("Игрок не выбран!")
         return
     end
 
     local character = LocalPlayer.Character
-    local targetChar = selectedPlayer.Character
+    local targetChar = tppleirs.Character
 
     if not character or not targetChar then
         warn("Персонаж не найден!")
@@ -671,6 +707,39 @@ Section:NewButton("Телепорт", "Телепорт к выбранному 
 
     if hrp and targetHRP then
         hrp.CFrame = targetHRP.CFrame * CFrame.new(0, 0, 2)
+    end
+end)
+
+Section:NewToggle("loop Teleport to the selected player", "ti suka ne ponyal", function(state)
+    if not tppleirs then
+        warn("Игрок не выбран!")
+        return
+    end
+
+    local character = LocalPlayer.Character
+    local targetChar = tppleirs.Character
+
+    if not character or not targetChar then
+        warn("Персонаж не найден!")
+        return
+    end
+
+    local hrp = character:FindFirstChild("HumanoidRootPart")
+    local targetHRP = targetChar:FindFirstChild("HumanoidRootPart")
+
+    if state then
+        tpvibrovnovaigrala = true
+
+        tpvibrovnovaigralaw = task.spawn(function()
+            while tpvibrovnovaigrala do
+                hrp.CFrame = targetHRP.CFrame * CFrame.new(0, 0, 2)
+                task.wait()
+            end
+        end)
+
+    else
+        tpvibrovnovaigrala = false
+        tpvibrovnovaigralaw = nil
     end
 end)
 

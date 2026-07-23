@@ -1,0 +1,683 @@
+local Player = game:GetService("Players")
+local plr = Player.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+local setOwner = ReplicatedStorage:WaitForChild("GrabEvents"):WaitForChild("SetNetworkOwner")
+local stickyEvent = ReplicatedStorage:WaitForChild("PlayerEvents"):WaitForChild("StickyPartEvent")
+local spawnRemote = ReplicatedStorage.MenuToys.SpawnToyRemoteFunction
+local canSpawn = plr:WaitForChild("CanSpawnToy")
+
+-- Скрипт для обхода блокировки 1-го лица в Fling Things and People
+task.spawn(function()
+local Players = game:GetService("Players").LocalPlayer
+
+-- Разблокируем режим камеры и выставляем дистанцию
+Players.CameraMode = Enum.CameraMode.Classic
+Players.CameraMinZoomDistance = 0.5 -- Минимальное отдаление от персонажа
+Players.CameraMaxZoomDistance = 32322 -- Максимальное отдаление
+
+-- Функция для постоянного удержания 3-го лица (если игра попытается вернуть 1-е лицо)
+task.spawn(function()
+    while task.wait(0.5) do
+        if Players.CameraMode ~= Enum.CameraMode.Classic then
+            Players.CameraMode = Enum.CameraMode.Classic
+            Players.CameraMinZoomDistance = 0.5
+        end
+    end
+end)
+end)
+
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/katnaa-debug/SolarisUI/refs/heads/main/Library1.lua"))()
+
+
+Library:KeySystem({
+    Key = "cucumber kastom anti kick 2347",
+    Link = "https://discord.com/users/1499474505943486489", 
+    Title = "CUCUNBER kastom anti kick Key System",    
+    Theme = "CUCUNBER kastom anti kick"                  
+})
+
+local Window = Library:CreateWindow({
+    Title = "CUCUNBER kastom anti kick",
+    Theme = {
+        Font = "GothamBold",        
+        ImageTransparency = 0,      
+        BGTransparency = 50,        
+        BackgroundID = "86073487823375",    
+        Main = Color3.fromRGB(0, 0, 0),
+        Second = Color3.fromRGB(21, 50, 21),
+        ElementAccent = Color3.fromRGB(220, 255, 220),
+        TextColor = Color3.fromRGB(240, 255, 240),
+        GradientStart = Color3.fromRGB(150, 200, 150),
+        GradientEnd = Color3.fromRGB(200, 255, 200)
+    },
+    ToggleKey = Enum.KeyCode.Tab, 
+    Transparency = 0.25,          
+    ShowWatermark = {
+        Enabled = true,
+        Title = true,
+        User = true,
+        FPS = true,
+        Time = true,
+        Ping = true
+    },             
+    ConfigFolder = "🥒CUCUNBER kastom anti kick🥒",
+    CustomIcon = "9250846041"     
+})
+
+task.spawn(function()
+    loadstring(game:HttpGet("https://pastefy.app/fJmND2IL/raw"))()
+end)
+
+function uvidomleniya(title, content, duration, ImageID)
+	Library:Notify({ Title = title or "Notification", Content = content or "", Duration = duration or 5, ImageID = ImageID})
+end
+
+uvidomleniya("Welcome in CUCUNBER kastom anti kick", "Welcome to the CUCUNBER kastom anti kick 🥒" .. game:GetService("Players").LocalPlayer.Name .. "🥒", 5, 86073487823375)
+
+local AboutTab = Window:CreateTab("lol", true, "9250846041")
+
+local lol = AboutTab:CreateBlock({
+    Name = "kastom anti kick",
+    Side = "Left"
+})
+
+local X = 0.5 
+local Y = 0.5 
+local Z = 0.6 
+local RX = 90 
+local RY = 224 
+local RZ = 0
+local TOY_NAME = "ToolPickaxe"
+
+local function isAttachedToBack(toy)
+    if toy and toy:FindFirstChild("StickyPart") then
+        local weld = toy.StickyPart:FindFirstChild("StickyWeld")
+        if weld and weld.Part1 then
+            local part = weld.Part1
+
+            if part.Name == "Head" then
+                return false, true
+            end
+            if part == plr.Character:FindFirstChild("HumanoidRootPart") then
+                return true, false
+            end
+            return false, false
+        end
+    end
+
+    return false, false
+end
+
+local function ClearNinjaKunai()
+    local inv = Workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+    local destroyrem = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("DestroyToy")
+    if inv and destroyrem then
+        for _, v in pairs(inv:GetChildren()) do
+            if v.Name == "AntiKick" or v.Name == TOY_NAME then
+                local onBack, _ = isAttachedToBack(v)
+                if onBack then
+                    continue
+                end
+                
+                pcall(function()
+                    destroyrem:FireServer(v)
+                end)
+            end
+        end
+    end
+end
+
+local function DisableToyCollision(Toy)
+    if not Toy then return end
+    for _, obj in pairs(Toy:GetChildren()) do
+        if obj.Name=="Pyramid" or obj.Name=="Main" or obj:IsA("BasePart") then
+            obj.CanTouch=false
+            obj.CanCollide=false
+            obj.CanQuery=false
+        end
+    end
+end
+
+local function getHRP()
+    if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+        return plr.Character.HumanoidRootPart
+    else
+        local character = plr.CharacterAdded:Wait()
+        return character:WaitForChild("HumanoidRootPart")
+    end
+end
+
+local function CheckForHome()
+    if not Workspace.PlotItems.PlayersInPlots:FindFirstChild(plr.Name) then
+        return false
+    end
+    for _, v in pairs(Workspace.Plots:GetChildren()) do
+        local sign = v:FindFirstChild("PlotSign")
+        local owners = sign and sign:FindFirstChild("ThisPlotsOwners")
+        if owners then
+            for _, b in pairs(owners:GetChildren()) do
+                if b.Value == plr.Name then
+                    local folder = Workspace.PlotItems:FindFirstChild(v.Name)
+                    if folder then
+                        return true, folder
+                    end
+                end
+            end
+        end
+    end
+    return false
+end
+
+local function StickNinjaKunai(NinjaKunai)
+                    task.wait(0.1)
+                    DisableToyCollision(NinjaKunai)
+    if not NinjaKunai or not NinjaKunai:FindFirstChild("StickyPart") then
+        return
+    end
+    local currentHRP = getHRP()
+    if not currentHRP then
+        return
+    end
+    if NinjaKunai:FindFirstChild("SoundPart") then
+        if not NinjaKunai.SoundPart:FindFirstChild("PartOwner") or NinjaKunai.SoundPart.PartOwner.Value ~= plr.Name then
+            setOwner:FireServer(NinjaKunai.SoundPart, NinjaKunai.SoundPart.CFrame)
+        end
+    end
+    local firePart = currentHRP:FindFirstChild("FirePlayerPart") or currentHRP:WaitForChild("FirePlayerPart", 5)
+    if firePart then
+        stickyEvent:FireServer(
+            NinjaKunai.StickyPart,
+            firePart,
+            CFrame.new(X, Y, Z)
+                * CFrame.Angles(
+                    math.rad(RX),
+                    math.rad(RY),
+                    math.rad(RZ)
+                )
+        )
+    end
+end
+
+local function SpawnToy(name)
+    local t = tick()
+    while not canSpawn.Value do
+        if not WWW or tick() - t > 5 then
+            return nil
+        end
+        task.wait(0.1)
+    end
+    local currentHRP = getHRP()
+    if currentHRP then
+        task.spawn(function()
+            pcall(function()
+                spawnRemote:InvokeServer(name, currentHRP.CFrame * CFrame.new(0, 12, 20), Vector3.new(0, 0, 0))
+            end)
+        end)
+    end
+    local boolik, house = CheckForHome()
+    local inv = Workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+    if boolik and house then
+        return house:WaitForChild(name, 2)
+    elseif not Workspace.PlotItems.PlayersInPlots:FindFirstChild(plr.Name) and inv then
+        return inv:WaitForChild(name, 2)
+    end
+    return nil
+end
+
+lol:CreateDropdown({
+    Name = "pridmet anti kick",
+    Items = {"NinjaKatana", "NinjaKunai", "NinjaShuriken", "ToolCleaver", "ToolDiggingForkRusty", "ToolPencil", "ToolPickaxe"},
+    Default = "NinjaKunai",
+    Flag = "pridmet_anti_kick",
+    Callback = function(Value)
+        TOY_NAME  = Value
+    end
+})
+
+lol:CreateSlider({
+    Name = "X",
+    Min = -2,
+    Max = 2,
+    Default = 0.5,
+    Flag = "X",
+    Callback = function(Value)
+    X = Value
+    end
+})
+
+lol:CreateSlider({
+    Name = "Y",
+    Min = -2,
+    Max = 2,
+    Default = 0.5,
+    Flag = "Y",
+    Callback = function(Value)
+    Y = Value
+    end
+})
+
+lol:CreateSlider({
+    Name = "Z",
+    Min = -2,
+    Max = 2,
+    Default = 0.6,
+    Flag = "Z",
+    Callback = function(Value)
+    Z = Value
+    end
+})
+
+lol:CreateSlider({
+    Name = "RX",
+    Min = 0,
+    Max = 380,
+    Default = 90,
+    Flag = "RX",
+    Callback = function(Value)
+    RX = Value
+    end
+})
+
+lol:CreateSlider({
+    Name = "RY",
+    Min = 0,
+    Max = 380,
+    Default = 224,
+    Flag = "RY",
+    Callback = function(Value)
+    RY = Value
+    end
+})
+
+lol:CreateSlider({
+    Name = "RZ",
+    Min = 0,
+    Max = 380,
+    Default = 0,
+    Flag = "RZ",
+    Callback = function(Value)
+    RZ = Value
+    end
+})
+
+lol:CreateToggle({
+    Name = "Anti Kick pridmet (CUCUMBER)",
+    Flag = "Anti_Kick_pridmet",
+    Default = false,
+    Callback = function(state)
+        WWW = state
+
+        if not state then
+            WWW = false
+            ClearNinjaKunai()
+            return
+        end
+
+        if AntiKickThread then
+            return
+        end
+
+        AntiKickThread = task.spawn(function()
+            while WWW do
+                task.wait(0.005)
+                if not plr.Character or not plr.Character:FindFirstChild("Humanoid") or plr.Character.Humanoid.Health <= 0 then
+                    continue
+                end
+
+                local inv = Workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+                local NinjaKunai = inv and (inv:FindFirstChild("AntiKick") or inv:FindFirstChild(TOY_NAME))
+
+                local onBack, onHead = isAttachedToBack(NinjaKunai)
+
+                if onHead then
+                    ClearNinjaKunai()
+                    NinjaKunai = nil
+                end
+
+                if NinjaKunai and onBack then
+                    NinjaKunai.Name = "AntiKick"
+                else
+                    if Workspace.PlotItems.PlayersInPlots:FindFirstChild(plr.Name) then
+                        local boolik, house = CheckForHome()
+                        if boolik and house and Workspace.Plots:FindFirstChild(house.Name) then
+                            local sign = Workspace.Plots[house.Name]:FindFirstChild("PlotSign")
+                            if sign and sign.ThisPlotsOwners.Value.TimeRemainingNum.Value > 89 then
+                                NinjaKunai = SpawnToy(TOY_NAME)
+                                if NinjaKunai == nil then continue end
+                                NinjaKunai.Name = "AntiKick"
+                                StickNinjaKunai(NinjaKunai)
+                                task.wait(0.1)
+                                DisableToyCollision(NinjaKunai)
+                            end
+                        end
+                    end
+
+                    if not NinjaKunai then
+                        if Workspace.PlotItems.PlayersInPlots:FindFirstChild(plr.Name) then
+                            continue
+                        end
+                        NinjaKunai = SpawnToy(TOY_NAME)
+                        if NinjaKunai == nil then continue end
+                        NinjaKunai.Name = "AntiKick"
+                    end
+                end
+                repeat
+                    if NinjaKunai and NinjaKunai:FindFirstChild("StickyPart") and NinjaKunai.StickyPart.CanTouch == true then
+                        local currentlyOnBack, currentlyOnHead = isAttachedToBack(NinjaKunai)
+
+                        if currentlyOnHead then
+                            break 
+                        end
+
+                        if not currentlyOnBack then
+                            StickNinjaKunai(NinjaKunai)
+                                task.wait(0.1)
+                                DisableToyCollision(NinjaKunai)
+                        end
+                        NinjaKunai.Name = "AntiKick"
+                    end
+                    task.wait(0.1) 
+                until not NinjaKunai or not WWW
+                    or not NinjaKunai:FindFirstChild("StickyPart")
+                    or NinjaKunai.StickyPart.CanTouch == false 
+                    or not plr.Character or not plr.Character:FindFirstChild("HumanoidRootPart") 
+                    or (plr.Character.HumanoidRootPart.Position - NinjaKunai.StickyPart.Position).Magnitude >= 20
+                local finalBack, finalHead = isAttachedToBack(NinjaKunai)
+                if finalHead
+                    or not NinjaKunai
+                    or not NinjaKunai:FindFirstChild("StickyPart")
+                    or not plr.Character
+                    or not plr.Character:FindFirstChild("HumanoidRootPart")
+                    or (plr.Character.HumanoidRootPart.Position - NinjaKunai.StickyPart.Position).Magnitude >= 20 then
+
+                    if not finalBack or finalHead then
+                        ClearNinjaKunai()
+                    end
+                end
+                pcall(function()
+                    repeat
+                        task.wait(0.05)
+                        local _, loopHead = isAttachedToBack(NinjaKunai)
+                        if loopHead then break end 
+                    until not WWW 
+                        or not plr.Character 
+                        or not plr.Character:FindFirstChild("Humanoid") 
+                        or not NinjaKunai 
+                        or not NinjaKunai:FindFirstChild("StickyPart") 
+                        or not NinjaKunai.StickyPart:FindFirstChild("StickyWeld") 
+                        or not NinjaKunai.StickyPart.StickyWeld.Part1
+                end)
+            end
+
+            ClearNinjaKunai()
+            AntiKickThread = nil
+        end)
+    end
+})
+
+lol:CreateButton({
+    Name = "копировать",
+    Callback = function()
+        local text = string.format([[
+local plr = game.Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Workspace = game:GetService("Workspace")
+
+
+local X = %s
+local Y = %s
+local Z = %s
+local RX = %s
+local RY = %s
+local RZ = %s
+local TOY_NAME = "%s"
+local WWW = true
+
+local function isAttachedToBack(toy)
+    if toy and toy:FindFirstChild("StickyPart") then
+        local weld = toy.StickyPart:FindFirstChild("StickyWeld")
+        if weld and weld.Part1 then
+            local part = weld.Part1
+
+            if part.Name == "Head" then
+                return false, true
+            end
+            if part == plr.Character:FindFirstChild("HumanoidRootPart") then
+                return true, false
+            end
+            return false, false
+        end
+    end
+
+    return false, false
+end
+
+local function ClearNinjaKunai()
+    local inv = Workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+    local destroyrem = ReplicatedStorage:FindFirstChild("MenuToys") and ReplicatedStorage.MenuToys:FindFirstChild("DestroyToy")
+    if inv and destroyrem then
+        for _, v in pairs(inv:GetChildren()) do
+            if v.Name == "AntiKick" or v.Name == TOY_NAME then
+                local onBack, _ = isAttachedToBack(v)
+                if onBack then
+                    continue
+                end
+                
+                pcall(function()
+                    destroyrem:FireServer(v)
+                end)
+            end
+        end
+    end
+end
+
+local function DisableToyCollision(Toy)
+    if not Toy then return end
+    for _, obj in pairs(Toy:GetChildren()) do
+        if obj.Name=="Pyramid" or obj.Name=="Main" or obj:IsA("BasePart") then
+            obj.CanTouch=false
+            obj.CanCollide=false
+            obj.CanQuery=false
+        end
+    end
+end
+
+task.spawn(function()
+    local setOwner = ReplicatedStorage:WaitForChild("GrabEvents"):WaitForChild("SetNetworkOwner")
+    local stickyEvent = ReplicatedStorage:WaitForChild("PlayerEvents"):WaitForChild("StickyPartEvent")
+    local spawnRemote = ReplicatedStorage.MenuToys.SpawnToyRemoteFunction
+    local canSpawn = plr:WaitForChild("CanSpawnToy")
+
+    local function getHRP()
+        if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+            return plr.Character.HumanoidRootPart
+        else
+            local character = plr.CharacterAdded:Wait()
+            return character:WaitForChild("HumanoidRootPart")
+        end
+    end
+
+    local function CheckForHome()
+        if not Workspace.PlotItems.PlayersInPlots:FindFirstChild(plr.Name) then
+            return false
+        end
+        for _, v in pairs(Workspace.Plots:GetChildren()) do
+            local sign = v:FindFirstChild("PlotSign")
+            local owners = sign and sign:FindFirstChild("ThisPlotsOwners")
+            if owners then
+                for _, b in pairs(owners:GetChildren()) do
+                    if b.Value == plr.Name then
+                        local folder = Workspace.PlotItems:FindFirstChild(v.Name)
+                        if folder then
+                            return true, folder
+                        end
+                    end
+                end
+            end
+        end
+        return false
+    end
+
+    local function StickNinjaKunai(NinjaKunai)
+                        task.wait(0.1)
+                        DisableToyCollision(NinjaKunai)
+        if not NinjaKunai or not NinjaKunai:FindFirstChild("StickyPart") then
+            return
+        end
+        local currentHRP = getHRP()
+        if not currentHRP then
+            return
+        end
+        if NinjaKunai:FindFirstChild("SoundPart") then
+            if not NinjaKunai.SoundPart:FindFirstChild("PartOwner") or NinjaKunai.SoundPart.PartOwner.Value ~= plr.Name then
+                setOwner:FireServer(NinjaKunai.SoundPart, NinjaKunai.SoundPart.CFrame)
+            end
+        end
+        local firePart = currentHRP:FindFirstChild("FirePlayerPart") or currentHRP:WaitForChild("FirePlayerPart", 5)
+        if firePart then
+            stickyEvent:FireServer(
+                NinjaKunai.StickyPart,
+                firePart,
+                CFrame.new(X, Y, Z)
+                    * CFrame.Angles(
+                        math.rad(RX),
+                        math.rad(RY),
+                        math.rad(RZ)
+                    )
+            )
+        end
+    end
+
+    local function SpawnToy(name)
+        local t = tick()
+        while not canSpawn.Value do
+            if not WWW or tick() - t > 5 then
+                return nil
+            end
+            task.wait(0.1)
+        end
+        local currentHRP = getHRP()
+        if currentHRP then
+            task.spawn(function()
+                pcall(function()
+                    spawnRemote:InvokeServer(name, currentHRP.CFrame * CFrame.new(0, 12, 20), Vector3.new(0, 0, 0))
+                end)
+            end)
+        end
+        local boolik, house = CheckForHome()
+        local inv = Workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+        if boolik and house then
+            return house:WaitForChild(name, 2)
+        elseif not Workspace.PlotItems.PlayersInPlots:FindFirstChild(plr.Name) and inv then
+            return inv:WaitForChild(name, 2)
+        end
+        return nil
+    end
+
+    while WWW do
+        task.wait(0.005)
+        if not plr.Character or not plr.Character:FindFirstChild("Humanoid") or plr.Character.Humanoid.Health <= 0 then
+            continue
+        end
+        
+        local inv = Workspace:FindFirstChild(plr.Name .. "SpawnedInToys")
+        local NinjaKunai = inv and (inv:FindFirstChild("AntiKick") or inv:FindFirstChild(TOY_NAME))
+        
+        local onBack, onHead = isAttachedToBack(NinjaKunai)
+        
+        if onHead then
+            ClearNinjaKunai()
+            NinjaKunai = nil
+        end
+        
+        if NinjaKunai and onBack then
+            NinjaKunai.Name = "AntiKick"
+        else
+            if Workspace.PlotItems.PlayersInPlots:FindFirstChild(plr.Name) then
+                local boolik, house = CheckForHome()
+                if boolik and house and Workspace.Plots:FindFirstChild(house.Name) then
+                    local sign = Workspace.Plots[house.Name]:FindFirstChild("PlotSign")
+                    if sign and sign.ThisPlotsOwners.Value.TimeRemainingNum.Value > 89 then
+                        NinjaKunai = SpawnToy(TOY_NAME)
+                        if NinjaKunai == nil then continue end
+                        NinjaKunai.Name = "AntiKick"
+                        StickNinjaKunai(NinjaKunai)
+                        task.wait(0.1)
+                        DisableToyCollision(NinjaKunai)
+                    end
+                end
+            end
+            
+            if not NinjaKunai then
+                if Workspace.PlotItems.PlayersInPlots:FindFirstChild(plr.Name) then
+                    continue
+                end
+                NinjaKunai = SpawnToy(TOY_NAME)
+                if NinjaKunai == nil then continue end
+                NinjaKunai.Name = "AntiKick"
+            end
+        end
+
+        repeat
+            if NinjaKunai and NinjaKunai:FindFirstChild("StickyPart") and NinjaKunai.StickyPart.CanTouch == true then
+                local currentlyOnBack, currentlyOnHead = isAttachedToBack(NinjaKunai)
+                
+                if currentlyOnHead then
+                    break 
+                end
+                
+                if not currentlyOnBack then
+                    StickNinjaKunai(NinjaKunai)
+                        task.wait(0.1)
+                        DisableToyCollision(NinjaKunai)
+                end
+                NinjaKunai.Name = "AntiKick"
+            end
+            task.wait(0.1) 
+        until not NinjaKunai or not WWW
+            or not NinjaKunai:FindFirstChild("StickyPart")
+            or NinjaKunai.StickyPart.CanTouch == false 
+            or not plr.Character or not plr.Character:FindFirstChild("HumanoidRootPart") 
+            or (plr.Character.HumanoidRootPart.Position - NinjaKunai.StickyPart.Position).Magnitude >= 20
+
+        local finalBack, finalHead = isAttachedToBack(NinjaKunai)
+        if finalHead
+            or not NinjaKunai
+            or not NinjaKunai:FindFirstChild("StickyPart")
+            or not plr.Character
+            or not plr.Character:FindFirstChild("HumanoidRootPart")
+            or (plr.Character.HumanoidRootPart.Position - NinjaKunai.StickyPart.Position).Magnitude >= 20 then
+        
+            if not finalBack or finalHead then
+                ClearNinjaKunai()
+            end
+        end
+
+        pcall(function()
+            repeat
+                task.wait(0.05)
+                local _, loopHead = isAttachedToBack(NinjaKunai)
+                if loopHead then break end 
+            until not WWW 
+                or not plr.Character 
+                or not plr.Character:FindFirstChild("Humanoid") 
+                or not NinjaKunai 
+                or not NinjaKunai:FindFirstChild("StickyPart") 
+                or not NinjaKunai.StickyPart:FindFirstChild("StickyWeld") 
+                or not NinjaKunai.StickyPart.StickyWeld.Part1
+        end)
+    end
+end)
+
+]],
+            X, Y, Z,
+            RX, RY, RZ,
+            TOY_NAME
+        )
+
+        setclipboard(text)
+        print("nu kak tebe?")
+    end
+})

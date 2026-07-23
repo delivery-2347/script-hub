@@ -31,12 +31,12 @@ end)
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/katnaa-debug/SolarisUI/refs/heads/main/Library1.lua"))()
 
 
-Library:KeySystem({
-    Key = "cucumber kastom anti kick 2347",
-    Link = "https://discord.com/users/1499474505943486489", 
-    Title = "CUCUNBER kastom anti kick Key System",    
-    Theme = "CUCUNBER kastom anti kick"                  
-})
+--Library:KeySystem({
+--    Key = "cucumber kastom anti kick 2347",
+--    Link = "https://discord.com/users/1499474505943486489", 
+--    Title = "CUCUNBER kastom anti kick Key System",    
+--    Theme = "CUCUNBER kastom anti kick"                  
+--})
 
 local Window = Library:CreateWindow({
     Title = "CUCUNBER kastom anti kick",

@@ -1,5 +1,4 @@
 local CloneMenu = game.Players.LocalPlayer.PlayerGui.MenuGui:Clone()
-game:GetService("CoreGui").CloneMenu.TopRight.CoinsFrame.CoinsDisplay.Coins = "u tebya mam slufa"
 CloneMenu.DisplayOrder = 0
 CloneMenu.Name = "CloneMenu"
 local ObjectsToRemove = {

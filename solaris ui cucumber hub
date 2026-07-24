@@ -950,8 +950,7 @@ local function tp()
 
     hrp.AssemblyLinearVelocity = Vector3.zero
     hrp.AssemblyAngularVelocity = Vector3.zero
-    task.wait(0.0005)
-    if tpspeed <= 0.03 then
+    if tpspeed <= 0.003 then
         partikendirmit()
     end
     hrp.CanCollide = true
@@ -1876,7 +1875,7 @@ gametab:CreateToggle({
 
 Playertab:CreateToggle({
     Name = "Packet Detector",
-    Default = false,
+    Default = true,
     Flag = "Packet_Detector", 
     Callback = function(State)
         if State then

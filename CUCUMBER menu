@@ -1,6 +1,6 @@
-game:GetService("Players").LocalPlayer.PlayerGui.MenuGui.TopRight.CoinsFrame.CoinsDisplay.CoinImage.Image = "rbxassetid://86073487823375"
+game:GetService("CoreGui").CloneMenu.TopRight.CoinsFrame.CoinsDisplay.CoinImage.Image = "rbxassetid://86073487823375"
 
-game:GetService("Players").LocalPlayer.PlayerGui.MenuGui.TopRight.CoinsFrame.CoinsDisplay.Coins.TextColor3 = Color3.fromRGB(115, 231, 101)
+game:GetService("CoreGui").CloneMenu.TopRight.CoinsFrame.CoinsDisplay.Coins.TextColor3 = Color3.fromRGB(115, 231, 101)
 
 game:GetService("Players").LocalPlayer.PlayerGui.MenuGui.Menu.TabContents.Toys.Title.TitleText.Text = "CUCUMBER Toys"
 

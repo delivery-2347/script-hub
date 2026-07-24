@@ -56,7 +56,7 @@ local CUCUMBER = {
 } 
 
 local Roles = {
-    frens = "drusi"
+    frens = "drusi",
     Owner = "owner",
     Testerkastom_ant_kick = "kastom_ant_kick",
     Blacklist = "blacklist",
@@ -72,15 +72,15 @@ local BypassUsers = {
     [10480042913]   = Roles.frens,-- unin
 } 
 
-if BypassUsers == Roles.frens then
+local role = BypassUsers[player.UserId]
+
+if role == Roles.frens then
     loadstring(game:HttpGet(solarisui))()
     print("da vso zavali ebalo ne blogaori") 
-elseif BypassUsers == Roles.Owner then
-
-elseif BypassUsers == Roles.Blacklist then
-
-elseif BypassUsers == Roles.Owner then
-
+    return
+elseif role == Roles.Owner then
+    loadstring(game:HttpGet(solarisui))()
+    return
 end
 
 -- GUI 
@@ -161,6 +161,30 @@ GetKeyButton.MouseButton1Click:Connect(function()
     GetKeyButton.BackgroundColor3 = CUCUMBER.Header 
 end) 
 
+local function RandomColor()
+	return Color3.fromRGB(
+		math.random(0, 255),
+		math.random(0, 255),
+		math.random(0, 255)
+	)
+end
+
+local function RainbowFlash()
+	local EndTime = tick() + 1 -- 1 секунда
+
+	while tick() < EndTime do
+		stroke.Color = RandomColor()
+		GetKeyButton.BackgroundColor3 = RandomColor()
+		GetKeyButton.TextColor3 = RandomColor()
+		KeyBox.BackgroundColor3 = RandomColor()
+		KeyBox.TextColor3 = RandomColor()
+		CheckButton.BackgroundColor3 = RandomColor()
+		CheckButton.TextColor3 = RandomColor()
+
+		task.wait() -- каждый кадр
+	end
+end
+
 -- 🔑 CHECK KEY LOGIC (ИСПРАВЛЕНО)
 CheckButton.MouseButton1Click:Connect(function() 
     local playerId = player.UserId 
@@ -191,4 +215,9 @@ CheckButton.MouseButton1Click:Connect(function()
         CheckButton.Text = "Check Key"
         CheckButton.BackgroundColor3 = CUCUMBER.SchemeColor
     end 
+    if enteredKey == "kastom_anti_kick" then 
+    RainbowFlash()
+    ScreenGui:Destroy() 
+    loadstring(game:HttpGet(kastom_anti_kick))()
+    end
 end)

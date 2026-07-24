@@ -79,15 +79,23 @@ task.spawn(function()
         end
     end)
 
-    while task.wait(0.1) do
-        Frames += 1
+	RunService.RenderStepped:Connect(function()
+	    Frames += 1
+	end)
 
-        local Coins = OriginalCoins.Text:gsub("%D", "")
-
-        CloneCoins.Text =
-            "Coins: " .. Coins ..
-            "\nFPS: " .. FPS ..
-            "\nPing: " .. Ping .. " ms" ..
-            "\nTime: " .. Time
-    end
+	task.spawn(function()
+	    while task.wait(1) do
+	        FPS = Frames
+	        Frames = 0
+	
+	        Ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+	        Time = os.date("%H:%M:%S")
+	
+	        local Coins = OriginalCoins.Text:gsub("%D", "")
+	
+	    CloneCoins.Text =
+	    ("Coins: %s\nFPS: %d\nPing: %d ms\nTime: %s")
+	    :format(Coins, FPS, Ping, Time)
+ 	end
+end)
 end)

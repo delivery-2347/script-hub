@@ -79,23 +79,30 @@ task.spawn(function()
         end
     end)
 
-	RunService.RenderStepped:Connect(function()
-	    Frames += 1
-	end)
-
-	task.spawn(function()
-	    while task.wait(1) do
-	        FPS = Frames
-	        Frames = 0
-	
-	        Ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
-	        Time = os.date("%H:%M:%S")
-	
-	        local Coins = OriginalCoins.Text:gsub("%D", "")
-	
-	    CloneCoins.Text =
-	    ("Coins: %s\nFPS: %d\nPing: %d ms\nTime: %s")
-	    :format(Coins, FPS, Ping, Time)
- 	end
-end)
+    local Frames = 0
+    local FPS = 0
+    
+    RunService.RenderStepped:Connect(function()
+        Frames += 1
+    end)
+    
+    task.spawn(function()
+        while task.wait(1) do
+            FPS = Frames
+            Frames = 0
+    
+            Ping = math.floor(Stats.Network.ServerStatsItem["Data Ping"]:GetValue())
+            Time = os.date("%H:%M:%S")
+    
+            local Coins = OriginalCoins.Text:gsub("%D", "")
+    
+            CloneCoins.Text = string.format(
+                "Coins: %s\nFPS: %d\nPing: %d ms\nTime: %s",
+                Coins,
+                FPS,
+                Ping,
+                Time
+            )
+        end
+    end)
 end)

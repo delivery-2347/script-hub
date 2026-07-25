@@ -4,6 +4,9 @@ end)
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/online-api/refs/heads/main/anlain.Lua"))()
 end)
+task.spawn(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/loldoelati.Lua"))()
+end)
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -30,9 +33,9 @@ local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local root = Character:WaitForChild("HumanoidRootPart")
 local head = Character:WaitForChild("Head")
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local Humanoid = Character:WaitForChild("Humanoid")
 local Backpack = LocalPlayer:WaitForChild("Backpack")
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local Lighting = game:GetService("Lighting")
 local Mouse = LocalPlayer:GetMouse()
 local PS = game:GetService("Players")
 local RS = game:GetService("ReplicatedStorage")
@@ -56,8 +59,11 @@ local stickyEvent = ReplicatedStorage:WaitForChild("PlayerEvents"):WaitForChild(
 local spawnRemote = ReplicatedStorage.MenuToys.SpawnToyRemoteFunction
 local canSpawn = plr:WaitForChild("CanSpawnToy")
 LocalPlayer.CharacterAdded:Connect(function(char)
-    root = Character:WaitForChild("HumanoidRootPart")
-    head = Character:WaitForChild("Head")
+    Character = char
+    root = char:WaitForChild("HumanoidRootPart")
+    head = char:WaitForChild("Head")
+    Humanoid = char:WaitForChild("Humanoid")
+    HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 end)
 
 local ToggleStates = {}
@@ -113,63 +119,78 @@ end
 
 uvidomleniya("Welcome", "Welcome to the cucumber 🥒" .. LocalPlayer.Name .. "🥒", 5, 86073487823375)
 
-local PacketSpamAmount = 900
 getgenv().PacketLagActive = false
 getgenv().MonsterLagEnabled = false
-getgenv().MonsterLagSpeed = 0 
-local tpspeed = 0.2 
+getgenv().MonsterLagSpeed = 0
+local ESPTransparency = 0.5
+local PacketSpamAmount = 900
+local tpspeed = 0.2
 local customKickHeight = 30
 local lastNotify = 0
 local COOLDOWN = 0.5
-local SPEED  =  120  
-local LIFE_TIME  =  10
-local TELEPORT_HEIGHT  =  1.5
+local SPEED = 120
+local LIFE_TIME = 10
+local TELEPORT_HEIGHT = 1.5
+local MonsterLagSpeed = 0
 local loopKickDualActive = false
-local selectedKickPlayer = nil
 local kickLoopEnabled = false
-local kickLoopConnection = nil
+local AutoBreakPCLD = false
+local bypass = false
 local loopSitOnBlobman = false
 local AntiKickEnabled = false
-local processed = setmetatable({}, {__mode = "k"})
-local AntiKickThread
-local connection
-local FPSMonitorConnection
 local playJerkOffActive = false
-local Packet = "lol"
-local jerkOffAnimTrack = nil
-local jerkOffAnimId = "rbxassetid://168268306" 
-local currentImage = "rbxassetid://13417638612"
-local XMATERIYAL = Enum.Material.Plastic
-local SVETPOLETKA = Color3.fromRGB(0, 0, 0)
 local Enabled = false
 local espEnabled = false
 local AntiGrab = false
 local AntiGrabProc = false
 local AGWalk = false
-local Cons = {}
-local packetConnections = {}
-local targetNames = {
-	"partesp",
-	"playercharacterlocationdetector"
-}
+local playerESPEnabled = false
+local LGK_OAT_kickLoopEnabled = false
+local kickLoopConnection = nil
+local conn = nil
+local connection = nil
+local FPSMonitorConnection = nil
+local AntiKickThread = nil
+local jerkOffAnimTrack = nil
+local selectedKickPlayer = nil
+local Packet = "lol"
+local jerkOffAnimId = "rbxassetid://168268306"
+local currentImage = "rbxassetid://13417638612"
 local bool = {
     DoRagdoll = true 
 }
+local targetNames = {
+    "partesp",
+    "playercharacterlocationdetector"
+}
+local processed = setmetatable({}, {__mode = "k"})
 local etc = {}
 local espBoxes = {}
 local playerESPObjects = {}
-local playerESPEnabled = false
+local Cons = {}
+local packetConnections = {}
+local XMATERIYAL = Enum.Material.Plastic
+local SVETPOLETKA = Color3.fromRGB(0, 0, 0)
+local ESPColor = Color3.fromRGB(0,255,56)
 local CUCUMBER_ESP = {
     SchemeColor = Color3.fromRGB(45, 160, 95),
     Background  = Color3.fromRGB(8, 18, 12),
     TextColor   = Color3.fromRGB(230, 230, 230),
 }
-local LGK_OAT_kickLoopEnabled = false
 local LGK_OAT_sno = function(part)
     if not part or not part.Parent then return end
+    
     pcall(function()
         ReplicatedStorage.GrabEvents.SetNetworkOwner:FireServer(part, part.CFrame)
     end)
+end
+
+local function breakPCLD()
+    for i = 1, 5 do
+        Humanoid.Health = 0
+        print(i)
+        task.wait(0.85)
+    end
 end
 
 local function partikendirmit()
@@ -644,7 +665,6 @@ local function ApplyAntiGrab(char)
 end
 
 function startJerkOff()
-	local plr = Players.LocalPlayer
 	local char = plr.Character or plr.CharacterAdded:Wait()
 	local hum = char:FindFirstChildOfClass("Humanoid")
 	if not hum then
@@ -760,8 +780,8 @@ local function AddBoxESP(obj)
 	box.Adornee = obj
 	box.AlwaysOnTop = true
 	box.ZIndex = 5
-	box.Color3 = Color3.fromRGB(255, 255, 255)
-	box.Transparency = 0.5
+	box.Color3 = ESPColor
+	box.Transparency = ESPTransparency
 	box.Size = obj.Size
 	box.Parent = game.CoreGui
 	espBoxes[obj] = box
@@ -1074,42 +1094,56 @@ local GAMEDefense = Defense:CreateBlock({
     Side = "Right"
 })
 
+local antikickDefense = Defense:CreateBlock({
+    Name = "anti kick",
+    Side = "Right"
+})
+
 local Characte = Defense:CreateBlock({
     Name = "Character",
     Side = "Left"
 })
 
+Characte:CreateButton({
+    Name = "break PCLD",
+    Callback = function()
+        breakPCLD()
+    end
+})
+
 Characte:CreateToggle({
-    Name = "Anti Grab",
-    Flag = "Anti_Grab",
+    Name = "auto break PCLD",
     Default = false,
-    Callback = function(Value)
-        AntiGrab = Value
-        DiscAll()
-        
-        if AntiGrab then
-            ApplyAntiGrab(Player.Character)
-            Cons["AGChar"] = Player.CharacterAdded:Connect(ApplyAntiGrab)
-        else
-            local char = Player.Character
-            if char then
-                for _, v in pairs(char:GetChildren()) do
-                    if v:IsA("BasePart") and v:FindFirstChild("BallSocketConstraint") and v.Name ~= "Head" then
-                        v.BallSocketConstraint.Enabled = false
-                        if v:FindFirstChild("RagdollLimbPart") then
-                            v.RagdollLimbPart.WeldConstraint.Enabled = true
-                        end
-                    end
+    Flag = "auto_break_PCLD",
+    Callback = function(State)
+        AutoBreakPCLD = State
+
+        if conn then conn:Disconnect() end
+        if not State then return end
+
+        local function Hook(char)
+            conn = char:WaitForChild("Humanoid").Died:Connect(function()
+                if AutoBreakPCLD and not bypass then
+                    bypass = true
+                    breakPCLD()
+                    task.wait(1)
+                    bypass = false
                 end
-            end
+            end)
         end
+
+        if LocalPlayer.Character then
+            Hook(LocalPlayer.Character)
+        end
+
+        LocalPlayer.CharacterAdded:Connect(Hook)
     end
 })
 
 Characte:CreateToggle({
     Name = "Auto Reset",
     Flag = "Auto_Reset",
-    Default = false,
+    Default = true,
     Callback = function(v)
         SetToggleState("Auto Reset", Value)
         if getgenv().AutoResetCon then getgenv().AutoResetCon:Disconnect() end
@@ -1155,6 +1189,84 @@ Characte:CreateToggle({
 })
 
 GAMEDefense:CreateToggle({
+    Name = "Anti Grab",
+    Flag = "Anti_Grab",
+    Default = false,
+    Callback = function(Value)
+        AntiGrab = Value
+        DiscAll()
+        
+        if AntiGrab then
+            ApplyAntiGrab(Player.Character)
+            Cons["AGChar"] = Player.CharacterAdded:Connect(ApplyAntiGrab)
+        else
+            local char = Player.Character
+            if char then
+                for _, v in pairs(char:GetChildren()) do
+                    if v:IsA("BasePart") and v:FindFirstChild("BallSocketConstraint") and v.Name ~= "Head" then
+                        v.BallSocketConstraint.Enabled = false
+                        if v:FindFirstChild("RagdollLimbPart") then
+                            v.RagdollLimbPart.WeldConstraint.Enabled = true
+                        end
+                    end
+                end
+            end
+        end
+    end
+})
+
+GAMEDefense:CreateToggle({
+    Name = "anti void",
+    Default = false, -- or true
+    Flag = "anti_void", 
+    Callback = function(State)
+        if State then
+            workspace.FallenPartsDestroyHeight = 0/0
+        else
+            workspace.FallenPartsDestroyHeight = -100
+        end
+    end
+})
+
+GAMEDefense:CreateToggle({
+    Name = "Water Walk",
+    Default = false, -- or true
+    Flag = "Water_Walk", 
+    Callback = function(State)
+        for i,vv in pairs(workspace.Map.AlwaysHereTweenedObjects.Ocean.Object.ObjectModel:GetChildren()) do
+            if vv.Name == "Ocean" then
+                vv.CanCollide = State
+            end
+        end
+    end
+})
+
+GAMEDefense:CreateToggle({
+    Name = "auto anti lag",
+    Default = true, 
+    Flag = "auto_anti_lag", 
+    Callback = function(State)
+        if State then
+            uvidomleniya("auto anti lag on", "auto anti lag", 1)
+            Startauto_anti_lag()
+        else
+            Stopauto_anti_lag()
+            uvidomleniya("auto anti lag off", "auto anti lag", 1)
+            game.Players.LocalPlayer.PlayerScripts.CharacterAndBeamMove.Enabled = true
+        end
+    end
+})
+
+GAMEDefense:CreateToggle({
+    Name = "anti lad",
+    Default = false, 
+    Flag = "anti_lad", 
+    Callback = function(State)
+        LocalPlayer.PlayerScripts.CharacterAndBeamMove.Enabled = not State
+    end
+})
+
+antikickDefense:CreateToggle({
     Name = "Anti Kick Kunai (CUCUMBRET)",
     Flag = "Anti_Kick_Kunai",
     Default = false,
@@ -1262,31 +1374,6 @@ GAMEDefense:CreateToggle({
             ClearNinjaKunai()
             AntiKickThread = nil
         end)
-    end
-})
-
-GAMEDefense:CreateToggle({
-    Name = "auto anti lag",
-    Default = true, 
-    Flag = "auto_anti_lag", 
-    Callback = function(State)
-        if State then
-            uvidomleniya("auto anti lag on", "auto anti lag", 1)
-            Startauto_anti_lag()
-        else
-            Stopauto_anti_lag()
-            uvidomleniya("auto anti lag off", "auto anti lag", 1)
-            game.Players.LocalPlayer.PlayerScripts.CharacterAndBeamMove.Enabled = true
-        end
-    end
-})
-
-GAMEDefense:CreateToggle({
-    Name = "anti lad",
-    Default = false, 
-    Flag = "anti_lad", 
-    Callback = function(State)
-        game.Players.LocalPlayer.PlayerScripts.CharacterAndBeamMove.Enabled = not State
     end
 })
 
@@ -1888,8 +1975,23 @@ Playertab:CreateToggle({
 
 VisualsTab = Window:CreateTab("Visuals", true, "9250846041")
 
+local Guitab = VisualsTab:CreateBlock({
+    Name = "Gui",
+    Side = "Left"
+})
+
+local BlackHoletab = VisualsTab:CreateBlock({
+    Name = "BlackHole",
+    Side = "Left"
+})
+
 local gametab = VisualsTab:CreateBlock({
     Name = "game",
+    Side = "Left"
+})
+
+local esptab = VisualsTab:CreateBlock({
+    Name = "esp",
     Side = "Left"
 })
 
@@ -1898,7 +2000,7 @@ local Playertab = VisualsTab:CreateBlock({
     Side = "Right"
 })
 
-gametab:CreateDropdown({
+Guitab:CreateDropdown({
     Name = "custom Menu",
     Items  = {"defolt", "cucumber"},
     Default = "cucumber",
@@ -1906,18 +2008,18 @@ gametab:CreateDropdown({
     Callback = function(Values)
         local selected = type(Values) == "table" and Values[1] or Values
         if selected == "defolt" then
-            local code = request({Url = "https://pastefy.app/qSQLmjPr/raw", Method = "GET"}).Body
+            local code = request({Url = "https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/defolt%20menu", Method = "GET"}).Body
             loadstring(code)()
             uvidomleniya("load defolt", "defolt Menu", 1)
         elseif selected == "cucumber" then
-            local code = request({Url = "https://pastefy.app/WXygY2bn/raw", Method = "GET"}).Body
+            local code = request({Url = "https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/CUCUMBER%20menu", Method = "GET"}).Body
             loadstring(code)()
             uvidomleniya("load cucumber", "cucumber Menu", 1)
         end
     end
 })
 
-gametab:CreateToggle({
+BlackHoletab:CreateToggle({
     Name = "BlackHole Kick custom",
     Default = true, 
     Flag = "BlackHole_Kick_custom", 
@@ -1935,7 +2037,7 @@ gametab:CreateToggle({
     end
 })
 
-gametab:CreateInput({
+BlackHoletab:CreateInput({
     Name = "BlackHole Kick Texture",
     Placeholder = "only Texture ID",
     Default = "",
@@ -1943,6 +2045,17 @@ gametab:CreateInput({
     Callback = function(iddirki)
         local id = iddirki:match("%d+")
 		if id then currentImage = "rbxassetid://" .. id end
+    end
+})
+
+gametab:CreateSlider({
+    Name = "Brightness Slider",
+    Min = 0,
+    Max = 1,
+    Default = 0,
+    Flag = "Brightness_Slider",
+    Callback = function(Value)
+        Lighting.Brightness = Value
     end
 })
 
@@ -2078,31 +2191,7 @@ gametab:CreateToggle({
     end
 })
 
-gametab:CreateColorPicker({
-    Name = "Color pcld",
-    Default = Color3.fromRGB(0,255,56),
-    Flag = "Color_pcld",
-    Callback = function(Color)
-        for _, box in pairs(espBoxes) do
-            box.Color3 = Color
-        end
-    end
-})
-
-gametab:CreateSlider({
-    Name = "Transparency pcld",
-    Min = 0.001,
-    Max = 1,
-    Default = 0.5,
-    Flag = "Transparency_pcld",
-    Callback = function(Value)
-        for _, box in pairs(espBoxes) do
-            box.Transparency = Value
-        end
-    end
-})
-
-gametab:CreateToggle({
+esptab:CreateToggle({
     Name = "Player ESP",
     Default = false, -- or true
     Flag = "Player_ESP", 
@@ -2112,24 +2201,43 @@ gametab:CreateToggle({
     end
 })
 
-gametab:CreateToggle({
+esptab:CreateColorPicker({
+    Name = "Color pcld",
+    Default = Color3.fromRGB(0,255,56),
+    Flag = "Color_pcld",
+    Callback = function(Color)
+        ESPColor = Color
+        for _, box in pairs(espBoxes) do
+            box.Color3 = Color
+        end
+    end
+})
+
+esptab:CreateSlider({
+    Name = "Transparency pcld",
+    Min = 0.001,
+    Max = 1,
+    Default = 0.5,
+    Flag = "Transparency_pcld",
+    Callback = function(Value)
+        ESPTransparency = Value
+        for _, box in pairs(espBoxes) do
+            box.Transparency = Value
+        end
+    end
+})
+
+esptab:CreateToggle({
     Name = "pcld esp",
     Default = false, -- or true
     Flag = "pcld_esp", 
     Callback = function(State)
 	    espEnabled = State
-	    if espEnabled then Scan() else RemoveAllBoxes() end
-    end
-})
-
-Playertab:CreateSlider({
-    Name = "Brightness Slider",
-    Min = 0,
-    Max = 1,
-    Default = 0,
-    Flag = "Brightness_Slider",
-    Callback = function(Value)
-        Lighting.Brightness = Value
+	    if espEnabled then 
+            Scan() 
+        else 
+            RemoveAllBoxes() 
+        end
     end
 })
 
@@ -2220,9 +2328,7 @@ Keybindss:CreateKeybind({
     Flag = "JERK_OFF",
     Callback = function()
         playJerkOffActive = not playJerkOffActive
-
         SetToggleState("JERK_OFF", playJerkOffActive)
-
         if playJerkOffActive then
             startJerkOff()
         else

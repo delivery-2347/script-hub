@@ -133,9 +133,9 @@ local function DisableToyCollision(Toy)
     if not Toy then return end
     for _, obj in pairs(Toy:GetChildren()) do
         if obj.Name=="Pyramid" or obj.Name=="Main" or obj:IsA("BasePart") then
-            obj.CanTouch=false
-            obj.CanCollide=false
-            obj.CanQuery=false
+            obj.CanTouch=true
+            obj.CanCollide=true
+            obj.CanQuery=true
         end
     end
 end
@@ -228,7 +228,7 @@ end
 
 lol:CreateDropdown({
     Name = "pridmet anti kick",
-    Items = {"NinjaKatana", "NinjaKunai", "NinjaShuriken", "ToolCleaver", "ToolDiggingForkRusty", "ToolPencil", "ToolPickaxe"},
+    Items = {"NinjaKunai", "NinjaShuriken", "ToolCleaver", "ToolDiggingForkRusty", "ToolPencil", "ToolPickaxe"},
     Default = "NinjaKunai",
     Flag = "pridmet_anti_kick",
     Callback = function(Value)
@@ -272,7 +272,7 @@ lol:CreateSlider({
 lol:CreateSlider({
     Name = "RX",
     Min = 0,
-    Max = 380,
+    Max = 360,
     Default = 90,
     Flag = "RX",
     Callback = function(Value)
@@ -283,7 +283,7 @@ lol:CreateSlider({
 lol:CreateSlider({
     Name = "RY",
     Min = 0,
-    Max = 380,
+    Max = 360,
     Default = 224,
     Flag = "RY",
     Callback = function(Value)
@@ -294,7 +294,7 @@ lol:CreateSlider({
 lol:CreateSlider({
     Name = "RZ",
     Min = 0,
-    Max = 380,
+    Max = 360,
     Default = 0,
     Flag = "RZ",
     Callback = function(Value)
@@ -418,9 +418,9 @@ lol:CreateToggle({
 })
 
 lol:CreateButton({
-    Name = "копировать",
+    Name = "Copy entire script",
     Callback = function()
-        local text = string.format([[
+    local allscript = string.format([[
 local plr = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -521,8 +521,8 @@ task.spawn(function()
     end
 
     local function StickNinjaKunai(NinjaKunai)
-                        task.wait(0.1)
-                        DisableToyCollision(NinjaKunai)
+        task.wait(0.1)
+        DisableToyCollision(NinjaKunai)
         if not NinjaKunai or not NinjaKunai:FindFirstChild("StickyPart") then
             return
         end
@@ -677,7 +677,29 @@ end)
             TOY_NAME
         )
 
-        setclipboard(text)
+        setclipboard(allscript)
+        print("nu kak tebe?")
+    end
+})
+
+lol:CreateButton({
+    Name = "Copy value",
+    Callback = function()
+    local value = string.format([[
+local X = %s
+local Y = %s
+local Z = %s
+local RX = %s
+local RY = %s
+local RZ = %s
+local TOY_NAME = "%s"
+]],
+            X, Y, Z,
+            RX, RY, RZ,
+            TOY_NAME
+        )
+
+        setclipboard(value)
         print("nu kak tebe?")
     end
 })

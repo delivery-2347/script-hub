@@ -94,10 +94,10 @@ task.spawn(function()
             local Coins = OriginalCoins.Text:gsub("%D", "")
 
             CloneCoins.Text = string.format(
-                "Coins: %s\nFPS: %d\nPing: %d ms",
-                Coins,
+                "%s\nFPS: %d\nPing: %d msCoins:",
                 FPS,
-                Ping
+                Ping,
+                Coins
             )
         end
     end)

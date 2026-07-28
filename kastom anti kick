@@ -62,7 +62,7 @@ local Window = Library:CreateWindow({
         Time = true,
         Ping = true
     },             
-    ConfigFolder = "🥒CUCUNBER kastom anti kick🥒",
+    ConfigFolder = "CUCUNBER kastom anti kick",
     CustomIcon = "9250846041"     
 })
 
@@ -89,14 +89,15 @@ local Z = 0.6
 local RX = 90 
 local RY = 224 
 local RZ = 0
+local kolizii = false
 local TOY_NAME = "ToolPickaxe"
+local WWW = false
 
 local function isAttachedToBack(toy)
     if toy and toy:FindFirstChild("StickyPart") then
         local weld = toy.StickyPart:FindFirstChild("StickyWeld")
         if weld and weld.Part1 then
             local part = weld.Part1
-
             if part.Name == "Head" then
                 return false, true
             end
@@ -131,12 +132,24 @@ end
 
 local function DisableToyCollision(Toy)
     if not Toy then return end
+
     for _, obj in pairs(Toy:GetChildren()) do
-        if obj.Name=="Pyramid" or obj.Name=="Main" or obj:IsA("BasePart") then
-            obj.CanTouch=true
-            obj.CanCollide=true
-            obj.CanQuery=true
+        if obj.Name == "Pyramid" or obj.Name == "Main" or obj:IsA("BasePart") then
+            obj.CanTouch = kolizii
+            obj.CanCollide = kolizii
+            obj.CanQuery = kolizii
         end
+    end
+
+    if not Toy:FindFirstChild("ESP") then
+        local Highlight = Instance.new("Highlight")
+        Highlight.Name = "ESP"
+        Highlight.Adornee = Toy
+        Highlight.FillTransparency = 1 -- без заливки
+        Highlight.OutlineTransparency = 0 -- только обводка
+        Highlight.OutlineColor = Color3.new(1, 1, 1) -- белая
+        Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop -- видно через стены
+        Highlight.Parent = Toy
     end
 end
 
@@ -171,8 +184,8 @@ local function CheckForHome()
 end
 
 local function StickNinjaKunai(NinjaKunai)
-                    task.wait(0.1)
-                    DisableToyCollision(NinjaKunai)
+    task.wait(0.1)
+    DisableToyCollision(NinjaKunai)
     if not NinjaKunai or not NinjaKunai:FindFirstChild("StickyPart") then
         return
     end
@@ -233,6 +246,15 @@ lol:CreateDropdown({
     Flag = "pridmet_anti_kick",
     Callback = function(Value)
         TOY_NAME  = Value
+    end
+})
+
+lol:CreateToggle({
+    Name = "Toggle",
+    Default = false, -- or true
+    Flag = "AutoFarm", 
+    Callback = function(State)
+        kolizii = State
     end
 })
 
@@ -321,7 +343,7 @@ lol:CreateToggle({
 
         AntiKickThread = task.spawn(function()
             while WWW do
-                task.wait(0.005)
+                task.wait(0.0005)
                 if not plr.Character or not plr.Character:FindFirstChild("Humanoid") or plr.Character.Humanoid.Health <= 0 then
                     continue
                 end
@@ -348,7 +370,6 @@ lol:CreateToggle({
                                 if NinjaKunai == nil then continue end
                                 NinjaKunai.Name = "AntiKick"
                                 StickNinjaKunai(NinjaKunai)
-                                task.wait(0.1)
                                 DisableToyCollision(NinjaKunai)
                             end
                         end
@@ -373,12 +394,10 @@ lol:CreateToggle({
 
                         if not currentlyOnBack then
                             StickNinjaKunai(NinjaKunai)
-                                task.wait(0.1)
                                 DisableToyCollision(NinjaKunai)
                         end
                         NinjaKunai.Name = "AntiKick"
                     end
-                    task.wait(0.1) 
                 until not NinjaKunai or not WWW
                     or not NinjaKunai:FindFirstChild("StickyPart")
                     or NinjaKunai.StickyPart.CanTouch == false 
@@ -398,7 +417,7 @@ lol:CreateToggle({
                 end
                 pcall(function()
                     repeat
-                        task.wait(0.05)
+                        task.wait()
                         local _, loopHead = isAttachedToBack(NinjaKunai)
                         if loopHead then break end 
                     until not WWW 
@@ -420,7 +439,7 @@ lol:CreateToggle({
 lol:CreateButton({
     Name = "Copy entire script",
     Callback = function()
-    local allscript = string.format([[
+    local Text = string.format([[
 local plr = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -432,6 +451,7 @@ local Z = %s
 local RX = %s
 local RY = %s
 local RZ = %s
+local kolizii = %s
 local TOY_NAME = "%s"
 local WWW = true
 
@@ -475,12 +495,24 @@ end
 
 local function DisableToyCollision(Toy)
     if not Toy then return end
+
     for _, obj in pairs(Toy:GetChildren()) do
-        if obj.Name=="Pyramid" or obj.Name=="Main" or obj:IsA("BasePart") then
-            obj.CanTouch=false
-            obj.CanCollide=false
-            obj.CanQuery=false
+        if obj.Name == "Pyramid" or obj.Name == "Main" or obj:IsA("BasePart") then
+            obj.CanTouch = false
+            obj.CanCollide = false
+            obj.CanQuery = false
         end
+    end
+
+    if not Toy:FindFirstChild("ESP") then
+        local Highlight = Instance.new("Highlight")
+        Highlight.Name = "ESP"
+        Highlight.Adornee = Toy
+        Highlight.FillTransparency = 1 -- без заливки
+        Highlight.OutlineTransparency = 0 -- только обводка
+        Highlight.OutlineColor = Color3.new(1, 1, 1) -- белая
+        Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop -- видно через стены
+        Highlight.Parent = Toy
     end
 end
 
@@ -674,10 +706,11 @@ end)
 ]],
             X, Y, Z,
             RX, RY, RZ,
+            tostring(kolizii),
             TOY_NAME
         )
 
-        setclipboard(allscript)
+        setclipboard(Text)
         print("nu kak tebe?")
     end
 })
@@ -685,21 +718,23 @@ end)
 lol:CreateButton({
     Name = "Copy value",
     Callback = function()
-    local value = string.format([[
+    local LOL = string.format([[
 local X = %s
 local Y = %s
 local Z = %s
 local RX = %s
 local RY = %s
 local RZ = %s
+local kolizii = %s
 local TOY_NAME = "%s"
 ]],
             X, Y, Z,
             RX, RY, RZ,
+            tostring(kolizii),
             TOY_NAME
         )
 
-        setclipboard(value)
+        setclipboard(LOL)
         print("nu kak tebe?")
     end
 })

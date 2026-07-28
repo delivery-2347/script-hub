@@ -1,0 +1,123 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+local isActivated = false
+local inputConnection = nil -- Ссылка на обработчик клавиш
+
+-- ==========================================
+-- ФУНКЦИИ ДЛЯ КАЖДОЙ КНОПКИ
+-- ==========================================
+local function RunScript()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/solaris%20ui%20cucumber%20hub"))()
+	print("Скрипт Y запущен!")
+end
+
+local function RunBlueScript()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/kastom%20anti%20kick"))()
+	print("Скрипт U запущен!")
+end
+
+local function RunNoScript()
+	print("🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒🥒!")
+end
+
+-- ==========================================
+-- СОЗДАНИЕ ИНТЕРФЕЙСА (GUI)
+-- ==========================================
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ConfirmationGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+local frame = Instance.new("Frame")
+frame.Name = "MainFrame"
+frame.Size = UDim2.new(0, 200, 0, 70)
+frame.Position = UDim2.new(0, 15, 0, 40)
+frame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+frame.BackgroundTransparency = 0.3
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 10)
+frameCorner.Parent = frame
+
+local uiListLayout = Instance.new("UIListLayout")
+uiListLayout.FillDirection = Enum.FillDirection.Horizontal
+uiListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+uiListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+uiListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+uiListLayout.Padding = UDim.new(0, 12)
+uiListLayout.Parent = frame
+
+local function createButton(name, text, color, layoutOrder)
+	local button = Instance.new("TextButton")
+	button.Name = name
+	button.Size = UDim2.new(0, 45, 0, 45)
+	button.BackgroundColor3 = color
+	button.Text = text
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.Font = Enum.Font.SourceSansBold
+	button.TextSize = 22
+	button.LayoutOrder = layoutOrder
+	button.BorderSizePixel = 0
+	button.Parent = frame
+
+	local buttonCorner = Instance.new("UICorner")
+	buttonCorner.CornerRadius = UDim.new(0, 8)
+	buttonCorner.Parent = button
+	return button
+end
+
+local buttonY = createButton("ButtonYes", "Y", Color3.fromRGB(46, 204, 113), 1)
+local buttonU = createButton("ButtonBlue", "U", Color3.fromRGB(52, 152, 219), 2)
+local buttonN = createButton("ButtonNo", "N", Color3.fromRGB(231, 76, 60), 3)
+
+-- ==========================================
+-- ЛОГИКА УДАЛЕНИЯ И АКТИВАЦИИ
+-- ==========================================
+
+local function handleAction(targetFunction)
+	if isActivated then return end 
+	isActivated = true 
+
+	-- ПОЛНОСТЬЮ ОТКЛЮЧАЕМ СЛУШАТЕЛЬ КЛАВИАТУРЫ
+	if inputConnection then
+		inputConnection:Disconnect()
+		inputConnection = nil
+	end
+
+	if screenGui and screenGui.Parent then
+		screenGui:Destroy() 
+	end
+	
+	targetFunction() 
+end
+
+-- 1. ОБРАБОТКА НАЖАТИЙ МЫШКОЙ (КЛИКИ)
+buttonY.MouseButton1Click:Connect(function()
+	handleAction(RunScript)
+end)
+
+buttonU.MouseButton1Click:Connect(function()
+	handleAction(RunBlueScript)
+end)
+
+buttonN.MouseButton1Click:Connect(function()
+	handleAction(RunNoScript)
+end)
+
+-- 2. ОБРАБОТКА КЛАВИШ НА КЛАВИАТУРЕ (БИНДЫ)
+inputConnection = UserInputService.InputBegan:Connect(function(input, gameProcessedEvent)
+	if gameProcessedEvent then return end 
+	
+	if input.KeyCode == Enum.KeyCode.Y then
+		handleAction(RunScript)
+	elseif input.KeyCode == Enum.KeyCode.U then
+		handleAction(RunBlueScript)
+	elseif input.KeyCode == Enum.KeyCode.N then
+		handleAction(RunNoScript)
+	end
+end)

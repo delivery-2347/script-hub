@@ -12,8 +12,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local Workspace = game:GetService("Workspace")
 local UserInputService = game:GetService("UserInputService")
-local Workspace = game:GetService("Workspace") 
 local Lighting = game:GetService("Lighting")
 local StarterGui = game:GetService("StarterGui")
 local SoundService = game:GetService("SoundService")
@@ -313,6 +313,29 @@ local function partikendirmit()
 	end)
 end
 
+local function DisableToyCollision(Toy)
+    if not Toy then return end
+
+    for _, obj in pairs(Toy:GetChildren()) do
+        if obj.Name == "Pyramid" or obj.Name == "Main" or obj:IsA("BasePart") then
+            obj.CanTouch = false
+            obj.CanCollide = false
+            obj.CanQuery = false
+        end
+    end
+
+    if not Toy:FindFirstChild("ESP") then
+        local Highlight = Instance.new("Highlight")
+        Highlight.Name = "ESP"
+        Highlight.Adornee = Toy
+        Highlight.FillTransparency = 1 -- без заливки
+        Highlight.OutlineTransparency = 0 -- только обводка
+        Highlight.OutlineColor = Color3.new(1, 1, 1) -- белая
+        Highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop -- видно через стены
+        Highlight.Parent = Toy
+    end
+end
+
 local function getHRP()
     if plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
         return plr.Character.HumanoidRootPart
@@ -508,7 +531,7 @@ local function handlePacketEvent(eventType, remoteName, ...)
     Library:Notify({
         Title = string.format("[%s] %s", eventType, remoteName),
         Content = string.format("Player: %s\nSize: %.4f MB\nArgs:\n%s", senderName, mbSize, argsStr),
-        Duration = 6
+        Duration = 3
     })
 end
 
@@ -1753,7 +1776,7 @@ blobkick:CreateToggle({
 })
 
 blobkick:CreateButton({
-        Name = "kick all",
+        Name = "kick all (Blob)",
         Callback = function()
             local blob = getBlobman()
             if not blob then
@@ -2328,7 +2351,7 @@ gametab:CreateToggle({
 
                 while getgenv().PacketLagActive do
                     pcall(function()
-                        GrabEvent:FireServer(string.rep(""..Packet , PacketSpamAmount))
+                        GrabEvent:FireServer(string.rep(Packet .."CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER CUCUMBER " , PacketSpamAmount))
                     end)
                     task.wait()
                 end

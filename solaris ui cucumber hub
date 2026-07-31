@@ -7,12 +7,13 @@ end)
 task.spawn(function()
     loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/loldoelati.Lua"))()
 end)
+--// Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ReplicatedFirst = game:GetService("ReplicatedFirst")
+local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
-local Workspace = game:GetService("Workspace")
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
 local StarterGui = game:GetService("StarterGui")
@@ -26,49 +27,58 @@ local ProximityPromptService = game:GetService("ProximityPromptService")
 local CollectionService = game:GetService("CollectionService")
 local PathfindingService = game:GetService("PathfindingService")
 local Debris = game:GetService("Debris")
+local CoreGui = game:GetService("CoreGui")
+--// Shortcuts
+local PS = Players
+local RS = ReplicatedStorage
+local R = RunService
+--// Player
 local LocalPlayer = Players.LocalPlayer
+local Player = LocalPlayer
 local plr = LocalPlayer
-local PlayerEvents = ReplicatedStorage:FindFirstChild("PlayerEvents")
-local SPE = PlayerEvents:FindFirstChild("StickyPartEvent")
+local Mouse = LocalPlayer:GetMouse()
+local Camera = Workspace.CurrentCamera
+--// Character
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local char = Character
-local root = Character:WaitForChild("HumanoidRootPart")
-local head = Character:WaitForChild("Head")
-local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 local Humanoid = Character:WaitForChild("Humanoid")
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+local root = HumanoidRootPart
+local head = Character:WaitForChild("Head")
+--// Player Objects
 local Backpack = LocalPlayer:WaitForChild("Backpack")
 local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
-local CoreGui = game:GetService("CoreGui")
-local Mouse = LocalPlayer:GetMouse()
-local PS = game:GetService("Players")
-local RS = game:GetService("ReplicatedStorage")
-local R = game:GetService("RunService")
-local Player = PS.LocalPlayer
-local Camera = Workspace.CurrentCamera
-local CE = RS:WaitForChild("CharacterEvents", 10)
-local BeingHeld = Player:WaitForChild("IsHeld", 10)
-local MenuToys = ReplicatedStorage:FindFirstChild("MenuToys")
-local STE = MenuToys:FindFirstChild("SpawnToyRemoteFunction")
-local DTE = MenuToys:FindFirstChild('DestroyToy')
+local BeingHeld = LocalPlayer:WaitForChild("IsHeld", 10)
+local canSpawn = LocalPlayer:WaitForChild("CanSpawnToy")
+--// Player Events
+local PlayerEvents = ReplicatedStorage:FindFirstChild("PlayerEvents")
+local SPE = PlayerEvents:FindFirstChild("StickyPartEvent")
+local stickyEvent = ReplicatedStorage:WaitForChild("PlayerEvents"):WaitForChild("StickyPartEvent")
+--// Character Events
+local CE = ReplicatedStorage:WaitForChild("CharacterEvents", 10)
 local StruggleEvent = CE and CE:WaitForChild("Struggle")
+--// Grab Events
 local GrabEvents = ReplicatedStorage:WaitForChild("GrabEvents")
-local grabParts = workspace:FindFirstChild("GrabParts")
 local ExtendGrabLine = GrabEvents:WaitForChild("ExtendGrabLine")
 local createGrabLineEvent = GrabEvents:WaitForChild("CreateGrabLine")
 local SNO = GrabEvents:FindFirstChild("SetNetworkOwner")
+local setOwner = GrabEvents:WaitForChild("SetNetworkOwner")
+--// Toys
+local MenuToys = ReplicatedStorage:FindFirstChild("MenuToys")
+local STE = MenuToys:FindFirstChild("SpawnToyRemoteFunction")
+local DTE = MenuToys:FindFirstChild("DestroyToy")
+local spawnRemote = ReplicatedStorage.MenuToys.SpawnToyRemoteFunction
+--// Workspace
 local FolderSpawnedInToys = LocalPlayer.Name .. "SpawnedInToys"
 local Inventory = Workspace:FindFirstChild(FolderSpawnedInToys)
-local setOwner = ReplicatedStorage:WaitForChild("GrabEvents"):WaitForChild("SetNetworkOwner")
-local stickyEvent = ReplicatedStorage:WaitForChild("PlayerEvents"):WaitForChild("StickyPartEvent")
-local spawnRemote = ReplicatedStorage.MenuToys.SpawnToyRemoteFunction
-local canSpawn = plr:WaitForChild("CanSpawnToy")
+local grabParts = Workspace:FindFirstChild("GrabParts")
 LocalPlayer.CharacterAdded:Connect(function(char)
     Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
     char = Character
-    root = char:WaitForChild("HumanoidRootPart")
-    head = char:WaitForChild("Head")
     Humanoid = char:WaitForChild("Humanoid")
-    HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+    HumanoidRootPart = char:WaitForChild("HumanoidRootPart")
+    root = HumanoidRootPart
+    head = char:WaitForChild("Head")
 end)
 
 loadstring(game:HttpGet('http://raw.githubusercontent.com/delivery-2347/infineti-getgenv-.execCmd-execCmd/refs/heads/main/infinetu.Lua'))()
@@ -120,6 +130,17 @@ end)
 
 function uvidomleniya(title, content, duration, ImageID)
 	Library:Notify({ Title = title or "Notification", Content = content or "", Duration = duration or 5, ImageID = ImageID})
+end
+function SISTEM_uvidomleniya(title, content, duration)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = title,
+        Text = content,
+        Duration = duration
+    })
+end
+
+if not getgenv().execCmd then
+    SISTEM_uvidomleniya("Infinite Yield", "You have the wrong version Re-enter the game without Infinite Yield, and the script will load it itself.", 1000)
 end
 
 uvidomleniya("Welcome", "Welcome to the cucumber 🥒" .. LocalPlayer.Name .. "🥒", 5, 86073487823375)
@@ -1110,25 +1131,6 @@ function notifyKick(displayName, username, idfese)
     print("kick user", displayName .. " (" .. username .. ") has been kicked")
 end
 
-local function getFaceId(player)
-	local character = player.Character
-	if not character then return nil end
-
-	local head = character:FindFirstChild("Head")
-	local face = head and head:FindFirstChild("face")
-
-	if face and face:IsA("Decal") then
-		return face.Texture:match("%d+")
-	end
-
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-	if humanoid then
-		return humanoid:GetAppliedDescription().Face
-	end
-
-	return nil
-end
-
 function getClosestPlayer(pos)
 	local closestPlr = nil
 	local closestDist = math.huge
@@ -1163,7 +1165,11 @@ Workspace.ChildAdded:Connect(function(obj)
 		if not plr then
 			return
 		end
-        local faceId = getFaceId(plr)
+        local faceId = Players:GetUserThumbnailAsync(
+            plr.UserId,
+            Enum.ThumbnailType.HeadShot,
+            Enum.ThumbnailSize.Size48x48
+        )
 		playKickSound()
 		notifyKick(plr.DisplayName, plr.Name, faceId)
 	end

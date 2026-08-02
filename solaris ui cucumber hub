@@ -131,16 +131,18 @@ end)
 function uvidomleniya(title, content, duration, ImageID)
 	Library:Notify({ Title = title or "Notification", Content = content or "", Duration = duration or 5, ImageID = ImageID})
 end
-function SISTEM_uvidomleniya(title, content, duration)
+
+function SISTEM_uvidomleniya(title, content, duration, iconId)
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = title,
-        Text = content,
-        Duration = duration
+    Title = title,
+    Text = content,
+    Duration = duration,
+    Icon = "rbxthumb://type=Asset&id=" .. iconId  .. "&w=150&h=150"
     })
 end
 
 if not getgenv().execCmd then
-    SISTEM_uvidomleniya("Infinite Yield", "You have the wrong version Re-enter the game without Infinite Yield, and the script will load it itself.", 1000)
+    SISTEM_uvidomleniya("Infinite Yield", "You have the wrong version Re-enter the game without Infinite Yield, and the script will load it itself.", 1000, 115810237733262)
 end
 
 uvidomleniya("Welcome", "Welcome to the cucumber 🥒" .. LocalPlayer.Name .. "🥒", 5, 86073487823375)

@@ -243,20 +243,16 @@ end
 
 -- Функция запуска
 local function StartHeart()
-    if heartConnection then return end -- Не запускать дубликат
+    if heartConnection then return end 
     
     isActive = true
     local start = tick()
 
     heartConnection = RunService.Heartbeat:Connect(function()
-        -- 1. Проверяем, не выключен ли скрипт принудительно
         if not isActive then
             StopHeart()
             return
         end
-
-        -- 2. Пытаемся найти парт по пути workspace.GrabParts.GrabPart
-        -- Используем FindFirstChild, чтобы скрипт не выдал ошибку, если папки или парта нет
         local folder = workspace:FindFirstChild("GrabParts")
         local part = folder and folder:FindFirstChild("GrabPart")
 
@@ -271,9 +267,7 @@ local function StartHeart()
 
             part.CFrame = CFrame.new(x, y + 17, 0) * CFrame.Angles(0, t, 0)
         else
-            -- Если парт не найден, мы ничего не делаем и просто ждем следующего кадра (Heartbeat продолжает работать)
-            -- Можно раскомментировать строку ниже для отладки:
-            -- print("Ищу парт по пути workspace.GrabParts.GrabPart...")
+        
         end
     end)
 end
@@ -2059,6 +2053,7 @@ kicl_all:CreateButton({
             end
         end
         uvidomleniya("kick all(grab) completed", "Of course, not everyone got kicked, but it was great", 5, 107070029277195)
+        table.clear(validTargets)
         task.wait(10)
         MonsterLagEnabledkickall = false
         uvidomleniya("lag", "has stopped", 5, 89066436747485)

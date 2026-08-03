@@ -44,6 +44,7 @@ local char = Character
 local Humanoid = Character:WaitForChild("Humanoid")
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 local root = HumanoidRootPart
+local HRP = HumanoidRootPart
 local head = Character:WaitForChild("Head")
 --// Player Objects
 local Backpack = LocalPlayer:WaitForChild("Backpack")
@@ -59,6 +60,9 @@ local CE = ReplicatedStorage:WaitForChild("CharacterEvents", 10)
 local StruggleEvent = CE and CE:WaitForChild("Struggle")
 --// Grab Events
 local GrabEvents = ReplicatedStorage:WaitForChild("GrabEvents")
+local SetNetworkOwner = GrabEvents:WaitForChild("SetNetworkOwner")
+local CreateGrabLine = GrabEvents:WaitForChild("CreateGrabLine")
+local DestroyGrabLine = GrabEvents:WaitForChild("DestroyGrabLine")
 local ExtendGrabLine = GrabEvents:WaitForChild("ExtendGrabLine")
 local createGrabLineEvent = GrabEvents:WaitForChild("CreateGrabLine")
 local SNO = GrabEvents:FindFirstChild("SetNetworkOwner")
@@ -78,6 +82,7 @@ LocalPlayer.CharacterAdded:Connect(function(char)
     Humanoid = char:WaitForChild("Humanoid")
     HumanoidRootPart = char:WaitForChild("HumanoidRootPart")
     root = HumanoidRootPart
+    HRP = HumanoidRootPart
     head = char:WaitForChild("Head")
 end)
 
@@ -160,6 +165,11 @@ local SPEED = 120
 local LIFE_TIME = 10
 local TELEPORT_HEIGHT = 1.5
 local MonsterLagSpeed = 0
+local height = 20
+local radius = 25
+local HOLD_TIME = 3
+local center = Vector3.new(1.78544486, -7.35040426 + height, -4.67127228)
+local isActive = false
 local loopKickDualActive = false
 local kickLoopEnabled = false
 local AutoBreakPCLD = false
@@ -175,9 +185,11 @@ local AntiGrabProc = false
 local AGWalk = false
 local playerESPEnabled = false
 local LGK_OAT_kickLoopEnabled = false
+local MonsterLagEnabledkickall = false
 local DiedHandle = nil
 local kickLoopConnection = nil
 local fovskoridsti = nil
+local heartConnection = nil 
 local conn = nil
 local connection = nil
 local FPSMonitorConnection = nil
@@ -202,6 +214,8 @@ local espBoxes = {}
 local playerESPObjects = {}
 local Cons = {}
 local packetConnections = {}
+local validTargets = {}
+local createdHolders = {}
 local XMATERIYAL = Enum.Material.Plastic
 local SVETPOLETKA = Color3.fromRGB(0, 0, 0)
 local ESPColor = Color3.fromRGB(0,255,56)
@@ -215,6 +229,52 @@ local LGK_OAT_sno = function(part)
     
     pcall(function()
         ReplicatedStorage.GrabEvents.SetNetworkOwner:FireServer(part, part.CFrame)
+    end)
+end
+
+local function StopHeart()
+    isActive = false
+    if heartConnection then
+        heartConnection:Disconnect()
+        heartConnection = nil
+    end
+    print("Animation Stopped")
+end
+
+-- Функция запуска
+local function StartHeart()
+    if heartConnection then return end -- Не запускать дубликат
+    
+    isActive = true
+    local start = tick()
+
+    heartConnection = RunService.Heartbeat:Connect(function()
+        -- 1. Проверяем, не выключен ли скрипт принудительно
+        if not isActive then
+            StopHeart()
+            return
+        end
+
+        -- 2. Пытаемся найти парт по пути workspace.GrabParts.GrabPart
+        -- Используем FindFirstChild, чтобы скрипт не выдал ошибку, если папки или парта нет
+        local folder = workspace:FindFirstChild("GrabParts")
+        local part = folder and folder:FindFirstChild("GrabPart")
+
+        -- 3. Если парт найден — анимируем
+        if part and part:IsA("BasePart") then
+            local t = (tick() - start) * 2
+            local x = 16 * math.sin(t)^3
+            local y = 13 * math.cos(t)
+                - 5 * math.cos(2*t)
+                - 2 * math.cos(3*t)
+                - math.cos(4*t)
+
+            part.CFrame = CFrame.new(x, y + 17, 0) * CFrame.Angles(0, t, 0)
+        else
+            -- Если парт не найден, мы ничего не делаем и просто ждем следующего кадра (Heartbeat продолжает работать)
+            -- Можно раскомментировать строку ниже для отладки:
+            -- print("Ищу парт по пути workspace.GrabParts.GrabPart...")
+        end
     end)
 end
 
@@ -1524,6 +1584,11 @@ local blobkick = targer:CreateBlock({
     Side = "Right"
 })
 
+local kicl_all = targer:CreateBlock({
+    Name = "kicl all",
+    Side = "Right"
+})
+
 local FUN = targer:CreateBlock({
     Name = "fun",
     Side = "Right"
@@ -1783,105 +1848,221 @@ blobkick:CreateToggle({
     end
 })
 
-blobkick:CreateButton({
-        Name = "kick all (Blob)",
-        Callback = function()
-            local blob = getBlobman()
-            if not blob then
-                if not IsSittingOnBlob() then
-                    SitOnBlobman()
-                end
-                task.wait(2)
+kicl_all:CreateButton({
+    Name = "kick all (Blob)",
+    Callback = function()
+        local blob = getBlobman()
+        if not blob then
+            if not IsSittingOnBlob() then
+                SitOnBlobman()
             end
-
-            local players = {}
-            for _, p in ipairs(PS:GetPlayers()) do
-                if p ~= Player then
-                    table.insert(players, p.Name)
-                end
-            end
-
-            if #players == 0 then
-                uvidomleniya("Error", "No players to kick!", 3)
-                return
-            end
-
-            uvidomleniya("kick all", "Starting kick all", 3)
-
-            local grab = blob.BlobmanSeatAndOwnerScript.CreatureGrab
-            local release = blob.BlobmanSeatAndOwnerScript.CreatureRelease
-            local drop = blob.BlobmanSeatAndOwnerScript.CreatureDrop
-            local set = RS.GrabEvents.SetNetworkOwner
-            local del = RS.GrabEvents.DestroyGrabLine
-
-            local detector = blob.LeftDetector
-            local weld = blob.LeftDetector.LeftWeld
-            local localHrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
-            
-            if not localHrp then return end
-
-            -- Step 1: Grab & Release loop for all players to bring them into processing range
-            for _, playerName in ipairs(players) do
-                local plr = PS:FindFirstChild(playerName)
-                if plr and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                    local targetHrp = plr.Character.HumanoidRootPart
-                    snapBlobTo(blob, targetHrp.CFrame)
-                    task.wait(0.15)
-                    grab:FireServer(blob.RightDetector, targetHrp, blob.RightDetector.RightWeld)
-                    release:FireServer(blob.RightDetector.RightWeld)
-                    task.wait(0.05)
-                end
-            end
-
-            -- Step 2: Move Blob to the center of the map
-            snapBlobTo(blob, CFrame.new(Vector3.new(0, 100, 0)))
-            task.wait(0.5)
-
-            -- Step 3: Process players in a circular formation
-            local center = Vector3.new(0, 100, 0)
-            local baseRadius = 40
-            local radius = baseRadius + (#players * 5) -- Expands circle based on player count
-            local numPlayers = #players
-            local angleIncrement = (2 * math.pi) / numPlayers
-            
-            for i, playerName in ipairs(players) do
-                local angle = angleIncrement * (i - 1)
-                local x = center.X + radius * math.cos(angle)
-                local z = center.Z + radius * math.sin(angle)
-                local blobPosition = Vector3.new(x, center.Y, z)
-                
-                -- Move Blob to circle position
-                snapBlobTo(blob, CFrame.new(blobPosition))
-                task.wait(0)
-                
-                -- Process the targeted player
-                local plr = PS:FindFirstChild(playerName)
-                if plr and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
-                    local targetHrp = plr.Character.HumanoidRootPart
-                    local blobHrp = blob:FindFirstChild("HumanoidRootPart")
-                    
-                    if blobHrp then
-                        -- Elevate player above Blob
-                        targetHrp.CFrame = CFrame.new(blobHrp.Position.X, blobHrp.Position.Y + 20, blobHrp.Position.Z)
-                        task.wait(0.15)
-                        
-                        -- Change Ownership & Destroy grab line
-                        set:FireServer(targetHrp, targetHrp.CFrame)
-                        del:FireServer(targetHrp)
-                        task.wait()
-                        -- Apply Silent Kick Effect
-                        grab:FireServer(detector, localHrp, weld)
-                        grab:FireServer(detector, targetHrp, weld)
-                        drop:FireServer(weld, targetHrp.RootAttachment)
-                    end
-                end
-                task.wait(0)
-            end
-            
-            task.wait(1)
-            releaseBlobAlign(blob)
-            uvidomleniya("Success", "kick all execution complete!", 3)
+            task.wait(2)
         end
+        local players = {}
+        for _, p in ipairs(PS:GetPlayers()) do
+            if p ~= Player then
+                table.insert(players, p.Name)
+            end
+        end
+        if #players == 0 then
+            uvidomleniya("Error", "No players to kick!", 3)
+            return
+        end
+        uvidomleniya("kick all", "Starting kick all", 3)
+        local grab = blob.BlobmanSeatAndOwnerScript.CreatureGrab
+        local release = blob.BlobmanSeatAndOwnerScript.CreatureRelease
+        local drop = blob.BlobmanSeatAndOwnerScript.CreatureDrop
+        local set = RS.GrabEvents.SetNetworkOwner
+        local del = RS.GrabEvents.DestroyGrabLine
+        local detector = blob.LeftDetector
+        local weld = blob.LeftDetector.LeftWeld
+        local localHrp = Player.Character and Player.Character:FindFirstChild("HumanoidRootPart")
+        
+        if not localHrp then return end
+        -- Step 1: Grab & Release loop for all players to bring them into processing range
+        for _, playerName in ipairs(players) do
+            local plr = PS:FindFirstChild(playerName)
+            if plr and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local targetHrp = plr.Character.HumanoidRootPart
+                snapBlobTo(blob, targetHrp.CFrame)
+                task.wait(0.15)
+                grab:FireServer(blob.RightDetector, targetHrp, blob.RightDetector.RightWeld)
+                release:FireServer(blob.RightDetector.RightWeld)
+                task.wait(0.05)
+            end
+        end
+        -- Step 2: Move Blob to the center of the map
+        snapBlobTo(blob, CFrame.new(Vector3.new(0, 100, 0)))
+        task.wait(0.5)
+        -- Step 3: Process players in a circular formation
+        local center = Vector3.new(0, 100, 0)
+        local baseRadius = 40
+        local radius = baseRadius + (#players * 5) -- Expands circle based on player count
+        local numPlayers = #players
+        local angleIncrement = (2 * math.pi) / numPlayers
+        
+        for i, playerName in ipairs(players) do
+            local angle = angleIncrement * (i - 1)
+            local x = center.X + radius * math.cos(angle)
+            local z = center.Z + radius * math.sin(angle)
+            local blobPosition = Vector3.new(x, center.Y, z)
+            
+            -- Move Blob to circle position
+            snapBlobTo(blob, CFrame.new(blobPosition))
+            task.wait(0)
+            
+            -- Process the targeted player
+            local plr = PS:FindFirstChild(playerName)
+            if plr and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") then
+                local targetHrp = plr.Character.HumanoidRootPart
+                local blobHrp = blob:FindFirstChild("HumanoidRootPart")
+                
+                if blobHrp then
+                    -- Elevate player above Blob
+                    targetHrp.CFrame = CFrame.new(blobHrp.Position.X, blobHrp.Position.Y + 20, blobHrp.Position.Z)
+                    task.wait(0.15)
+                    
+                    -- Change Ownership & Destroy grab line
+                    set:FireServer(targetHrp, targetHrp.CFrame)
+                    del:FireServer(targetHrp)
+                    task.wait()
+                    -- Apply Silent Kick Effect
+                    grab:FireServer(detector, localHrp, weld)
+                    grab:FireServer(detector, targetHrp, weld)
+                    drop:FireServer(weld, targetHrp.RootAttachment)
+                end
+            end
+            task.wait(0)
+        end
+        
+        task.wait(1)
+        releaseBlobAlign(blob)
+        uvidomleniya("Success", "kick all execution complete!", 3)
+    end
+})
+
+kicl_all:CreateButton({
+    Name = "kick all(grab)",
+    Callback = function()
+    MonsterLagEnabledkickall = true
+        task.spawn(function()
+            local RepS = game:GetService("ReplicatedStorage")
+            local WS = game:GetService("Workspace")
+            local LP = game:GetService("Players").LocalPlayer
+            local GrabEvents = RepS:FindFirstChild("GrabEvents")
+            local CreateLine = GrabEvents and GrabEvents:FindFirstChild("CreateGrabLine")
+            while MonsterLagEnabledkickall and CreateLine do
+                local spawnLocation = WS:FindFirstChild("SpawnLocation") 
+                    or WS:FindFirstChild("Spawn") 
+                    or (LP.Character and LP.Character:FindFirstChild("HumanoidRootPart"))
+                if spawnLocation then
+                    local randomX = math.random(-9e9, 9e9)
+                    local randomZ = math.random(-9e9, 9e9)
+                    CreateLine:FireServer(spawnLocation, CFrame.new(randomX, 0, randomZ))
+                end
+                task.wait(0)
+            end
+        end)
+
+        uvidomleniya("kick all(grab) launch", "Wait, it's starting to lag", 5, 140038364398105)
+
+        task.wait(3)
+
+        local PlayersInPlots = Workspace.PlotItems:WaitForChild("PlayersInPlots")
+
+
+        for _, plr in ipairs(Players:GetPlayers()) do
+            local isFriend = Player:IsFriendsWith(plr.UserId)
+
+            if plr ~= Player and not isFriend and not PlayersInPlots:FindFirstChild(plr.Name) then
+                local plrChar = plr.Character
+                local torso = plrChar and (plrChar:FindFirstChild("Torso") or plrChar:FindFirstChild("UpperTorso"))
+                local targetHRP = plrChar and plrChar:FindFirstChild("HumanoidRootPart")
+
+                if torso and targetHRP then
+                    table.insert(validTargets, {
+                        Player = plr,
+                        Torso = torso,
+                        HRP = targetHRP
+                    })
+                end
+            end
+        end
+
+        if #validTargets == 0 then
+            uvidomleniya("Players", "target Players = 0", 5, 7992557358)
+            MonsterLagEnabledkickall = false
+            return
+        end
+
+        for _, targetData in ipairs(validTargets) do
+            local torso = targetData.Torso
+            local targetHRP = targetData.HRP
+
+            if torso and targetHRP and targetHRP.Parent then
+                HRP.CFrame = targetHRP.CFrame * CFrame.new(0, 5, 0)
+                task.wait(0.15) 
+                SetNetworkOwner:FireServer(torso, targetHRP.CFrame)
+                task.wait(0.05)
+                CreateGrabLine:FireServer(torso, CFrame.new(0.216, -0.210, -0.500))
+                task.wait(0.2)
+            end
+        end
+
+        for i, targetData in ipairs(validTargets) do
+            local targetHRP = targetData.HRP
+
+            if targetHRP and targetHRP.Parent then
+                local angle = (i - 1) * (2 * math.pi / #validTargets)
+                local position = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+
+                targetHRP.CFrame = CFrame.lookAt(position, center)
+                targetHRP.AssemblyLinearVelocity = Vector3.zero
+                targetHRP.AssemblyAngularVelocity = Vector3.zero
+
+                local bodyVelocity = Instance.new("BodyVelocity")
+                bodyVelocity.Name = "TempAirHold"
+                bodyVelocity.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+                bodyVelocity.Velocity = Vector3.zero
+                bodyVelocity.Parent = targetHRP
+
+                table.insert(createdHolders, bodyVelocity)
+            end
+        end
+
+        if #validTargets > 0 then
+            local targetOnCircle = validTargets[1]
+            if targetOnCircle.HRP and targetOnCircle.HRP.Parent then
+                HRP.CFrame = targetOnCircle.HRP.CFrame * CFrame.new(0, 3.5, 0)
+                task.wait(0.15)
+            end
+        end
+
+        for _, targetData in ipairs(validTargets) do
+            local torso = targetData.Torso
+            if torso and torso.Parent then
+                DestroyGrabLine:FireServer(torso)
+                task.wait(0.05)
+            end
+        end
+
+        task.wait(HOLD_TIME)
+
+        for _, bv in ipairs(createdHolders) do
+            if bv and bv.Parent then bv:Destroy() end
+        end
+
+        for _, targetData in ipairs(validTargets) do
+            local torso = targetData.Torso
+            if torso and torso.Parent then
+                DestroyGrabLine:FireServer(torso)
+            end
+        end
+        uvidomleniya("kick all(grab) completed", "Of course, not everyone got kicked, but it was great", 5, 107070029277195)
+        task.wait(10)
+        MonsterLagEnabledkickall = false
+        uvidomleniya("lag", "has stopped", 5, 89066436747485)
+    end
 })
 
 kickgrab:CreateToggle({
@@ -1900,7 +2081,7 @@ kickgrab:CreateToggle({
             
             if not target or not target.Parent then
                 LGK_OAT_kickLoopEnabled = false
-                Library:Notify({ Title = "Oats Kick", Content = "No target selected.", Duration = 3 })
+                Library:Notify({ Title = "Kick", Content = "No target selected.", Duration = 3 })
                 return
             end
 
@@ -2212,6 +2393,20 @@ local gametab = grab:CreateBlock({
 local Playertab = grab:CreateBlock({
     Name = "Player",
     Side = "Right"
+})
+
+gametab:CreateToggle({
+    Name = "Heart Animation",
+    Default = false,
+    Flag = "HeartToggle", 
+    Callback = function(Value)
+        isActive = Value
+        if isActive then
+            StartHeart()
+        else
+            StopHeart()
+        end
+    end
 })
 
 Playertab:CreateToggle({

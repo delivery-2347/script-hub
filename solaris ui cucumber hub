@@ -71,11 +71,15 @@ local setOwner = GrabEvents:WaitForChild("SetNetworkOwner")
 local MenuToys = ReplicatedStorage:FindFirstChild("MenuToys")
 local STE = MenuToys:FindFirstChild("SpawnToyRemoteFunction")
 local DTE = MenuToys:FindFirstChild("DestroyToy")
-local spawnRemote = ReplicatedStorage.MenuToys.SpawnToyRemoteFunction
+local spawnRemote = MenuToys.SpawnToyRemoteFunction
+local SpawnToyRemoteFunction = spawnRemote
 --// Workspace
 local FolderSpawnedInToys = LocalPlayer.Name .. "SpawnedInToys"
 local Inventory = Workspace:FindFirstChild(FolderSpawnedInToys)
 local grabParts = Workspace:FindFirstChild("GrabParts")
+local CreateGrabLine = GrabEvents:WaitForChild("CreateGrabLine")
+local SetNetworkOwner = GrabEvents:WaitForChild("SetNetworkOwner")
+local DestroyGrabLine = GrabEvents:WaitForChild("DestroyGrabLine")
 LocalPlayer.CharacterAdded:Connect(function(char)
     Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
     char = Character
@@ -166,9 +170,9 @@ local LIFE_TIME = 10
 local TELEPORT_HEIGHT = 1.5
 local MonsterLagSpeed = 0
 local height = 20
-local radius = 25
+local radius = 30
 local HOLD_TIME = 3
-local center = Vector3.new(1.78544486, -7.35040426 + height, -4.67127228)
+local center = Vector3.new(0, -7.35 + height, 0)
 local isActive = false
 local loopKickDualActive = false
 local kickLoopEnabled = false
@@ -1936,8 +1940,14 @@ kicl_all:CreateButton({
 })
 
 kicl_all:CreateButton({
-    Name = "kick all(grab)",
+    Name = "kick all (grab)",
     Callback = function()
+    if #Players:GetPlayers() - 1 == 0 then
+            uvidomleniya("Players", "target Players = 0 lag = off", 5, 7992557358)
+            MonsterLagEnabledkickall = false
+        return
+    end
+
     MonsterLagEnabledkickall = true
         task.spawn(function()
             local RepS = game:GetService("ReplicatedStorage")
@@ -1958,7 +1968,7 @@ kicl_all:CreateButton({
             end
         end)
 
-        uvidomleniya("kick all(grab) launch", "Wait, it's starting to lag", 5, 140038364398105)
+        uvidomleniya("kick all (grab) launch", "Wait, it's starting to lag", 5, 140038364398105)
 
         task.wait(3)
 
@@ -1981,12 +1991,6 @@ kicl_all:CreateButton({
                     })
                 end
             end
-        end
-
-        if #validTargets == 0 then
-            uvidomleniya("Players", "target Players = 0", 5, 7992557358)
-            MonsterLagEnabledkickall = false
-            return
         end
 
         for _, targetData in ipairs(validTargets) do
@@ -2039,6 +2043,8 @@ kicl_all:CreateButton({
                 task.wait(0.05)
             end
         end
+
+        HRP.CFrame = CFrame.new(0, -7.35, 0)
 
         task.wait(HOLD_TIME)
 

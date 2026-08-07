@@ -155,7 +155,6 @@ if not getgenv().execCmd then
 end
 
 uvidomleniya("Welcome", "Welcome to the cucumber 🥒" .. LocalPlayer.Name .. "🥒", 5, 86073487823375)
-
 getgenv().PacketLagActive = false
 getgenv().MonsterLagEnabled = false
 getgenv().MonsterLagSpeed = 0
@@ -173,6 +172,7 @@ local height = 20
 local radius = 30
 local HOLD_TIME = 3
 local center = Vector3.new(0, -7.35 + height, 0)
+local autoKillActive = false
 local isActive = false
 local loopKickDualActive = false
 local kickLoopEnabled = false
@@ -190,6 +190,8 @@ local AGWalk = false
 local playerESPEnabled = false
 local LGK_OAT_kickLoopEnabled = false
 local MonsterLagEnabledkickall = false
+local killThread = nil
+local selectedKickPlayer = nil
 local DiedHandle = nil
 local kickLoopConnection = nil
 local fovskoridsti = nil
@@ -234,6 +236,50 @@ local LGK_OAT_sno = function(part)
     pcall(function()
         ReplicatedStorage.GrabEvents.SetNetworkOwner:FireServer(part, part.CFrame)
     end)
+end
+
+local function killLoop(playerObject)
+	while playerObject and playerObject.Parent == Players do
+		local targetCharacter = playerObject.Character
+		if targetCharacter then
+			local abekt = targetCharacter:FindFirstChild("HumanoidRootPart")
+			local humanoid = targetCharacter:FindFirstChildOfClass("Humanoid")
+			local myCharacter = LocalPlayer.Character
+			local HRP = myCharacter and myCharacter:FindFirstChild("HumanoidRootPart")
+			
+			if abekt and HRP and humanoid and humanoid.Health > 0 then
+				local lastpozisn = HRP.CFrame
+				
+				HRP.CFrame = abekt.CFrame * CFrame.new(0, 0, 2)
+				task.wait(0.2)
+				
+				CreateGrabLine:FireServer(abekt, abekt.CFrame) 
+				SetNetworkOwner:FireServer(abekt, abekt.CFrame) 
+				DestroyGrabLine:FireServer(abekt) 
+				
+				task.wait(0.2)
+				abekt.CFrame = CFrame.new(-785.244995, -91, -71.9565201)
+				
+				task.wait(0.2)
+				HRP.CFrame = lastpozisn
+				task.wait(4)
+			end
+		end
+		task.wait(0.3)
+	end
+end
+
+local function TurnOff()
+	if killThread then
+		task.cancel(killThread)
+		killThread = nil
+	end
+end
+
+local function TurnOn(playerObject)
+	TurnOff()
+	if not playerObject or not playerObject:IsA("Player") then return end
+	killThread = task.spawn(killLoop, playerObject)
 end
 
 local function StopHeart()
@@ -2065,6 +2111,20 @@ kicl_all:CreateButton({
         MonsterLagEnabledkickall = false
         uvidomleniya("lag", "has stopped", 5, 89066436747485)
     end
+})
+
+Help:CreateToggle({ 
+	Name = "kill (grab)", 
+	Default = false, 
+	Flag = "kill_grab", 
+	Callback = function(State) 
+		autoKillActive = State
+		if State then 
+			TurnOn(selectedKickPlayer) 
+		else 
+			TurnOff() 
+		end 
+	end 
 })
 
 kickgrab:CreateToggle({

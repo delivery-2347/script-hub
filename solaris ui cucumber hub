@@ -1942,11 +1942,6 @@ kicl_all:CreateButton({
 kicl_all:CreateButton({
     Name = "kick all (grab)",
     Callback = function()
-    if #Players:GetPlayers() - 1 == 0 then
-            uvidomleniya("Players", "target Players = 0 lag = off", 5, 7992557358)
-            MonsterLagEnabledkickall = false
-        return
-    end
 
     MonsterLagEnabledkickall = true
         task.spawn(function()
@@ -1991,6 +1986,12 @@ kicl_all:CreateButton({
                     })
                 end
             end
+        end
+        
+        if #validTargets == 0 then
+            SISTEM_uvidomleniya("players", "target players = 0", 5, 7992557358)
+            MonsterLagEnabledkickall = false
+            return
         end
 
         for _, targetData in ipairs(validTargets) do
@@ -2655,8 +2656,8 @@ BlackHoletab:CreateInput({
 gametab:CreateSlider({
     Name = "Brightness Slider",
     Min = 0,
-    Max = 1,
-    Default = 0,
+    Max = 3,
+    Default = 2,
     Flag = "Brightness_Slider",
     Callback = function(Value)
         Lighting.Brightness = Value

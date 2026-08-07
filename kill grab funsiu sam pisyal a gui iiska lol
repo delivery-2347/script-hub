@@ -111,17 +111,17 @@ local function startAutoKillLoop()
 						
 						-- ТЕЛЕПОРТ К ЦЕЛИ И АКТИВАЦИЯ ИВЕНТОВ ИЗ ВАШЕГО КОДА
 						HRP.CFrame = abekt.CFrame * CFrame.new(0, 0, 2)
-						task.wait(0.2)
+						task.wait(0.3)
 						
 						CreateGrabLine:FireServer(abekt, abekt.CFrame) 
 						SetNetworkOwner:FireServer(abekt, abekt.CFrame) 
 						DestroyGrabLine:FireServer(abekt) 
 						
-						task.wait(0.2)
+						task.wait(0.3)
 						-- СБРОС ТЕЛА В БЕЗДНУ
 						abekt.CFrame = CFrame.new(-785.244995, -91, -71.9565201)
 						
-						task.wait(0.2)
+						task.wait(0.1)
 						-- ВОЗВРАТ НАЗАД
 						HRP.CFrame = lastpozisn
 						

@@ -15,18 +15,9 @@ local Workspace = game:GetService("Workspace")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local Lighting = game:GetService("Lighting")
 local StarterGui = game:GetService("StarterGui")
-local SoundService = game:GetService("SoundService")
-local TextChatService = game:GetService("TextChatService")
-local TeleportService = game:GetService("TeleportService")
-local HttpService = game:GetService("HttpService")
-local MarketplaceService = game:GetService("MarketplaceService")
-local ContextActionService = game:GetService("ContextActionService")
-local ProximityPromptService = game:GetService("ProximityPromptService")
-local CollectionService = game:GetService("CollectionService")
 local PathfindingService = game:GetService("PathfindingService")
-local Debris = game:GetService("Debris")
+local TextChatService = game:GetService("TextChatService")
 local CoreGui = game:GetService("CoreGui")
 --// Shortcuts
 local PS = Players
@@ -143,10 +134,10 @@ end
 
 function SISTEM_uvidomleniya(title, content, duration, iconId)
     game:GetService("StarterGui"):SetCore("SendNotification", {
-    Title = title,
-    Text = content,
-    Duration = duration,
-    Icon = "rbxthumb://type=Asset&id=" .. iconId  .. "&w=150&h=150"
+        Title = title,
+        Text = content,
+        Duration = duration,
+        Icon = iconId and ("rbxthumb://type=Asset&id=" .. iconId .. "&w=150&h=150") or nil
     })
 end
 
@@ -1228,7 +1219,7 @@ function playKickSound()
 	s.SoundId = "rbxassetid://140278004623742" -- Bell (Deltarune)
 	s.Volume = 1
 	s.PlayOnRemove = true
-	s.Parent = SoundService
+	s.Parent = game:GetService("SoundService")
 	s:Destroy()
 end
 
@@ -2720,7 +2711,7 @@ gametab:CreateSlider({
     Default = 2,
     Flag = "Brightness_Slider",
     Callback = function(Value)
-        Lighting.Brightness = Value
+        game:GetService("Lighting").Brightness = Value
     end
 })
 

@@ -329,29 +329,23 @@ local function HighlightLine(line)
         local char =
             line:sub(i, i)
 
-        --==========================================
         -- COMMENT
-        --==========================================
 
         if line:sub(
             i,
             i + 1
         ) == "--" then
 
-            table.insert(
-                result,
+            result[#result + 1] =
                 Paint(
                     line:sub(i),
                     C.Comment
                 )
-            )
 
             break
         end
 
-        --==========================================
         -- DOUBLE STRING
-        --==========================================
 
         if char == '"' then
 
@@ -381,8 +375,7 @@ local function HighlightLine(line)
 
             end
 
-            table.insert(
-                result,
+            result[#result + 1] =
                 Paint(
                     line:sub(
                         start,
@@ -390,14 +383,11 @@ local function HighlightLine(line)
                     ),
                     C.String
                 )
-            )
 
             continue
         end
 
-        --==========================================
         -- SINGLE STRING
-        --==========================================
 
         if char == "'" then
 
@@ -427,8 +417,7 @@ local function HighlightLine(line)
 
             end
 
-            table.insert(
-                result,
+            result[#result + 1] =
                 Paint(
                     line:sub(
                         start,
@@ -436,14 +425,11 @@ local function HighlightLine(line)
                     ),
                     C.String
                 )
-            )
 
             continue
         end
 
-        --==========================================
         -- NUMBER
-        --==========================================
 
         if char:match("%d") then
 
@@ -461,8 +447,7 @@ local function HighlightLine(line)
 
             end
 
-            table.insert(
-                result,
+            result[#result + 1] =
                 Paint(
                     line:sub(
                         start,
@@ -470,14 +455,11 @@ local function HighlightLine(line)
                     ),
                     C.Number
                 )
-            )
 
             continue
         end
 
-        --==========================================
         -- WORD
-        --==========================================
 
         if char:match("[%a_]") then
 
@@ -503,23 +485,19 @@ local function HighlightLine(line)
 
             if Special[word] then
 
-                table.insert(
-                    result,
+                result[#result + 1] =
                     Paint(
                         word,
                         Special[word]
                     )
-                )
 
             elseif Keywords[word] then
 
-                table.insert(
-                    result,
+                result[#result + 1] =
                     Paint(
                         word,
                         C.Keyword
                     )
-                )
 
             else
 
@@ -530,20 +508,16 @@ local function HighlightLine(line)
                     "^%s*%("
                 ) then
 
-                    table.insert(
-                        result,
+                    result[#result + 1] =
                         Paint(
                             word,
                             C.Function
                         )
-                    )
 
                 else
 
-                    table.insert(
-                        result,
+                    result[#result + 1] =
                         Escape(word)
-                    )
 
                 end
 
@@ -552,35 +526,27 @@ local function HighlightLine(line)
             continue
         end
 
-        --==========================================
         -- OPERATORS
-        --==========================================
 
         if char:match(
             "[=<>~%+%-%*/%^%%]"
         ) then
 
-            table.insert(
-                result,
+            result[#result + 1] =
                 Paint(
                     char,
                     C.Operator
                 )
-            )
 
             i += 1
 
             continue
         end
 
-        --==========================================
         -- NORMAL CHARACTER
-        --==========================================
 
-        table.insert(
-            result,
+        result[#result + 1] =
             Escape(char)
-        )
 
         i += 1
 
@@ -591,6 +557,7 @@ local function HighlightLine(line)
     )
 
 end
+
 
 local function HighlightCode(code)
 
@@ -616,10 +583,8 @@ local function HighlightCode(code)
 
     for _, line in ipairs(lines) do
 
-        table.insert(
-            output,
+        output[#output + 1] =
             HighlightLine(line)
-        )
 
     end
 

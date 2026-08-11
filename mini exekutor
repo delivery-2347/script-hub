@@ -66,7 +66,7 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local playerGui = game:GetService("CoreGui")
 
 -- Remove old GUI if it already exists
 local oldGui = playerGui:FindFirstChild("CucumberScriptExecutor")

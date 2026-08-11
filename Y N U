@@ -18,7 +18,7 @@ local function RunBlueScript()
 end
 
 local function RunGreenScript()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/INZEKTOR"))()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/mini%20exekutor"))()
 end
 
 local function RunNoScript()

@@ -1,155 +1,1836 @@
--- 🥒 Cucumber Executor — LocalScript
--- Вставь в StarterPlayerScripts или запусти через executor
+--//==================================================
+--// 🥒 CUCUMBER INZEKTOR
+--// Fixed tabs + syntax highlight + line numbers
+--//==================================================
 
-local CUCUMBER = {
-    SchemeColor = Color3.fromRGB(45, 160, 95),
-    Background  = Color3.fromRGB(8,  18,  12),
-    Header      = Color3.fromRGB(12, 30,  20),
-    TextColor   = Color3.fromRGB(230,230, 230),
-    ElementColor= Color3.fromRGB(18, 55,  38),
+local CoreGui = game:GetService("CoreGui")
+local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+--==================================================
+-- CONFIG
+--==================================================
+
+local MAX_TABS = 20
+
+local C = {
+    Background = Color3.fromRGB(7, 13, 9),
+    Header = Color3.fromRGB(9, 24, 16),
+    Editor = Color3.fromRGB(8, 18, 12),
+    Lines = Color3.fromRGB(6, 13, 9),
+
+    Button = Color3.fromRGB(14, 36, 23),
+    ButtonHover = Color3.fromRGB(23, 58, 36),
+
+    Green = Color3.fromRGB(70, 210, 105),
+    Text = Color3.fromRGB(220, 230, 223),
+    Muted = Color3.fromRGB(90, 125, 100),
+
+    Keyword = Color3.fromRGB(255, 145, 90),
+    String = Color3.fromRGB(145, 220, 140),
+    Number = Color3.fromRGB(190, 155, 245),
+    Comment = Color3.fromRGB(80, 120, 90),
+    Function = Color3.fromRGB(90, 185, 255),
+    Boolean = Color3.fromRGB(255, 205, 100),
+    Operator = Color3.fromRGB(215, 215, 215),
 }
 
-local Players       = game:GetService("Players")
-local CoreGui       = game:GetService("CoreGui")
-local TweenService  = game:GetService("TweenService")
-local UIS           = game:GetService("UserInputService")
+--==================================================
+-- REMOVE OLD
+--==================================================
 
-if CoreGui:FindFirstChild("CucumberExecutor") then
-    CoreGui:FindFirstChild("CucumberExecutor"):Destroy()
+local old = CoreGui:FindFirstChild("CucumberExecutor")
+
+if old then
+    old:Destroy()
 end
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name            = "CucumberExecutor"
-ScreenGui.ResetOnSpawn    = false
-ScreenGui.ZIndexBehavior  = Enum.ZIndexBehavior.Sibling
-ScreenGui.Parent          = CoreGui
+--==================================================
+-- HELPERS
+--==================================================
 
-local Window = Instance.new("Frame")
-Window.Name              = "Window"
-Window.Size              = UDim2.new(0, 460, 0, 320)
-Window.Position          = UDim2.new(0.5, -230, 0.5, -160)
-Window.BackgroundColor3  = CUCUMBER.Background
-Window.BorderSizePixel   = 0
-Window.ClipsDescendants  = true
-Window.Parent            = ScreenGui
-Instance.new("UICorner", Window).CornerRadius = UDim.new(0, 10)
-Instance.new("UIStroke", Window).Color = CUCUMBER.SchemeColor
+local function New(class, props, parent)
+    local obj = Instance.new(class)
 
-local Header = Instance.new("Frame")
-Header.Name             = "Header"
-Header.Size             = UDim2.new(1, 0, 0, 36)
-Header.BackgroundColor3 = CUCUMBER.Header
-Header.BorderSizePixel  = 0
-Header.Parent           = Window
+    for key, value in pairs(props or {}) do
+        obj[key] = value
+    end
 
-local Title = Instance.new("TextLabel")
-Title.Text              = "🥒 Cucumber Executor"
-Title.Size              = UDim2.new(1, -40, 1, 0)
-Title.Position          = UDim2.new(0, 12, 0, 0)
-Title.BackgroundTransparency = 1
-Title.TextColor3        = CUCUMBER.SchemeColor
-Title.TextSize          = 14
-Title.Font              = Enum.Font.GothamBold
-Title.TextXAlignment    = Enum.TextXAlignment.Left
-Title.Parent            = Header
+    obj.Parent = parent
 
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Text               = "✕"
-CloseBtn.Size               = UDim2.new(0, 28, 0, 28)
-CloseBtn.Position           = UDim2.new(1, -34, 0, 4)
-CloseBtn.BackgroundColor3   = Color3.fromRGB(180, 60, 60)
-CloseBtn.TextColor3         = CUCUMBER.TextColor
-CloseBtn.TextSize           = 12
-CloseBtn.Font               = Enum.Font.GothamBold
-CloseBtn.BorderSizePixel    = 0
-CloseBtn.Parent             = Header
-Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
-CloseBtn.MouseButton1Click:Connect(function()
+    return obj
+end
+
+local function Corner(obj, radius)
+    local c = Instance.new("UICorner")
+
+    c.CornerRadius = UDim.new(
+        0,
+        radius or 6
+    )
+
+    c.Parent = obj
+
+    return c
+end
+
+local function Stroke(obj, color, thickness, transparency)
+    local s = Instance.new("UIStroke")
+
+    s.Color = color
+    s.Thickness = thickness or 1
+    s.Transparency = transparency or 0
+
+    s.Parent = obj
+
+    return s
+end
+
+local function RGB(color)
+    return string.format(
+        "rgb(%d,%d,%d)",
+        math.floor(color.R * 255),
+        math.floor(color.G * 255),
+        math.floor(color.B * 255)
+    )
+end
+
+local function Escape(text)
+    return tostring(text)
+        :gsub("&", "&amp;")
+        :gsub("<", "&lt;")
+        :gsub(">", "&gt;")
+end
+
+local function Paint(text, color)
+    return '<font color="' ..
+        RGB(color) ..
+        '">' ..
+        Escape(text) ..
+        "</font>"
+end
+
+--==================================================
+-- LUA SYNTAX
+--==================================================
+
+local Keywords = {
+    ["and"] = true,
+    ["break"] = true,
+    ["do"] = true,
+    ["else"] = true,
+    ["elseif"] = true,
+    ["end"] = true,
+    ["for"] = true,
+    ["function"] = true,
+    ["if"] = true,
+    ["in"] = true,
+    ["local"] = true,
+    ["not"] = true,
+    ["or"] = true,
+    ["repeat"] = true,
+    ["return"] = true,
+    ["then"] = true,
+    ["until"] = true,
+    ["while"] = true,
+}
+
+local Special = {
+    ["true"] = C.Boolean,
+    ["false"] = C.Boolean,
+    ["nil"] = C.Boolean,
+}
+
+local function HighlightLine(line)
+    local result = {}
+
+    local i = 1
+    local length = #line
+
+    while i <= length do
+
+        local char = line:sub(i, i)
+
+        --==========================================
+        -- COMMENT
+        --==========================================
+
+        if line:sub(i, i + 1) == "--" then
+
+            table.insert(
+                result,
+                Paint(
+                    line:sub(i),
+                    C.Comment
+                )
+            )
+
+            break
+        end
+
+        --==========================================
+        -- DOUBLE STRING
+        --==========================================
+
+        if char == '"' then
+
+            local start = i
+
+            i += 1
+
+            while i <= length do
+
+                local c = line:sub(i, i)
+
+                if c == "\\" then
+                    i += 2
+
+                elseif c == '"' then
+                    i += 1
+                    break
+
+                else
+                    i += 1
+                end
+
+            end
+
+            table.insert(
+                result,
+                Paint(
+                    line:sub(start, i - 1),
+                    C.String
+                )
+            )
+
+            continue
+        end
+
+        --==========================================
+        -- SINGLE STRING
+        --==========================================
+
+        if char == "'" then
+
+            local start = i
+
+            i += 1
+
+            while i <= length do
+
+                local c = line:sub(i, i)
+
+                if c == "\\" then
+                    i += 2
+
+                elseif c == "'" then
+                    i += 1
+                    break
+
+                else
+                    i += 1
+                end
+
+            end
+
+            table.insert(
+                result,
+                Paint(
+                    line:sub(start, i - 1),
+                    C.String
+                )
+            )
+
+            continue
+        end
+
+        --==========================================
+        -- NUMBER
+        --==========================================
+
+        if char:match("%d") then
+
+            local start = i
+
+            while i <= length
+                and line:sub(i, i):match("[%d%.]") do
+
+                i += 1
+            end
+
+            table.insert(
+                result,
+                Paint(
+                    line:sub(start, i - 1),
+                    C.Number
+                )
+            )
+
+            continue
+        end
+
+        --==========================================
+        -- WORD
+        --==========================================
+
+        if char:match("[%a_]") then
+
+            local start = i
+
+            while i <= length
+                and line:sub(i, i):match("[%w_]") do
+
+                i += 1
+            end
+
+            local word = line:sub(
+                start,
+                i - 1
+            )
+
+            -- boolean / nil
+
+            if Special[word] then
+
+                table.insert(
+                    result,
+                    Paint(
+                        word,
+                        Special[word]
+                    )
+                )
+
+            -- keyword
+
+            elseif Keywords[word] then
+
+                table.insert(
+                    result,
+                    Paint(
+                        word,
+                        C.Keyword
+                    )
+                )
+
+            else
+
+                -- function call
+
+                local rest = line:sub(i)
+
+                if rest:match("^%s*%(") then
+
+                    table.insert(
+                        result,
+                        Paint(
+                            word,
+                            C.Function
+                        )
+                    )
+
+                else
+
+                    table.insert(
+                        result,
+                        Escape(word)
+                    )
+
+                end
+            end
+
+            continue
+        end
+
+        --==========================================
+        -- OPERATORS
+        --==========================================
+
+        if char:match("[=<>~%+%-%*/%^%%]") then
+
+            table.insert(
+                result,
+                Paint(
+                    char,
+                    C.Operator
+                )
+            )
+
+            i += 1
+
+            continue
+        end
+
+        --==========================================
+        -- NORMAL
+        --==========================================
+
+        table.insert(
+            result,
+            Escape(char)
+        )
+
+        i += 1
+    end
+
+    return table.concat(result)
+end
+
+local function HighlightCode(code)
+
+    code = code
+        :gsub("\r\n", "\n")
+        :gsub("\r", "\n")
+
+    local lines = string.split(
+        code,
+        "\n"
+    )
+
+    local result = {}
+
+    for _, line in ipairs(lines) do
+
+        table.insert(
+            result,
+            HighlightLine(line)
+        )
+
+    end
+
+    return table.concat(
+        result,
+        "\n"
+    )
+end
+
+--==================================================
+-- GUI
+--==================================================
+
+local ScreenGui = New("ScreenGui", {
+    Name = "CucumberExecutor",
+    ResetOnSpawn = false,
+    IgnoreGuiInset = true,
+    ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+}, CoreGui)
+
+local Window = New("Frame", {
+    Name = "Window",
+
+    Size = UDim2.fromOffset(
+        720,
+        500
+    ),
+
+    Position = UDim2.new(
+        0.5,
+        -360,
+        0.5,
+        -250
+    ),
+
+    BackgroundColor3 = C.Background,
+    BorderSizePixel = 0,
+
+    ClipsDescendants = true,
+}, ScreenGui)
+
+Corner(Window, 10)
+
+Stroke(
+    Window,
+    C.Green,
+    1,
+    0.25
+)
+
+--==================================================
+-- HEADER
+--==================================================
+
+local Header = New("Frame", {
+    Size = UDim2.new(
+        1,
+        0,
+        0,
+        42
+    ),
+
+    BackgroundColor3 = C.Header,
+    BorderSizePixel = 0,
+}, Window)
+
+local Title = New("TextLabel", {
+    BackgroundTransparency = 1,
+
+    Position = UDim2.fromOffset(
+        14,
+        0
+    ),
+
+    Size = UDim2.fromOffset(
+        300,
+        42
+    ),
+
+    Text = "🥒  Cucumber Executor",
+
+    TextColor3 = C.Green,
+
+    TextSize = 14,
+
+    Font = Enum.Font.GothamBold,
+
+    TextXAlignment =
+        Enum.TextXAlignment.Left,
+}, Header)
+
+local Status = New("TextLabel", {
+    BackgroundTransparency = 1,
+
+    Position = UDim2.new(
+        1,
+        -150,
+        0,
+        0
+    ),
+
+    Size = UDim2.fromOffset(
+        105,
+        42
+    ),
+
+    Text = "● Ready",
+
+    TextColor3 = C.Muted,
+
+    TextSize = 11,
+
+    Font = Enum.Font.GothamMedium,
+
+    TextXAlignment =
+        Enum.TextXAlignment.Right,
+}, Header)
+
+local Close = New("TextButton", {
+    Size = UDim2.fromOffset(
+        30,
+        30
+    ),
+
+    Position = UDim2.new(
+        1,
+        -37,
+        0,
+        6
+    ),
+
+    BackgroundColor3 =
+        Color3.fromRGB(
+            120,
+            45,
+            45
+        ),
+
+    Text = "×",
+
+    TextColor3 = C.Text,
+
+    TextSize = 17,
+
+    Font = Enum.Font.GothamBold,
+
+    BorderSizePixel = 0,
+
+    AutoButtonColor = false,
+}, Header)
+
+Corner(Close, 7)
+
+Close.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
-local ScriptBox = Instance.new("TextBox")
-ScriptBox.Name                 = "ScriptBox"
-ScriptBox.Size                 = UDim2.new(1, -20, 1, -110)
-ScriptBox.Position             = UDim2.new(0, 10, 0, 46)
-ScriptBox.BackgroundColor3     = CUCUMBER.ElementColor
-ScriptBox.TextColor3           = CUCUMBER.TextColor
-ScriptBox.PlaceholderText      = "-- Вставьте ваш скрипт сюда..."
-ScriptBox.PlaceholderColor3    = Color3.fromRGB(60, 120, 80)
-ScriptBox.TextSize             = 13
-ScriptBox.Font                 = Enum.Font.Code
-ScriptBox.TextXAlignment       = Enum.TextXAlignment.Left
-ScriptBox.TextYAlignment       = Enum.TextYAlignment.Top
-ScriptBox.MultiLine            = true
-ScriptBox.ClearTextOnFocus     = false
-ScriptBox.TextWrapped          = true
-ScriptBox.BorderSizePixel      = 0
-ScriptBox.Parent               = Window
-Instance.new("UICorner", ScriptBox).CornerRadius = UDim.new(0, 7)
-Instance.new("UIPadding", ScriptBox).PaddingLeft = UDim.new(0, 8)
+--==================================================
+-- TABS
+--==================================================
 
-local ClearBtn = Instance.new("TextButton")
-ClearBtn.Text              = "Clear"
-ClearBtn.Size              = UDim2.new(0, 90, 0, 30)
-ClearBtn.Position          = UDim2.new(0, 10, 1, -44)
-ClearBtn.BackgroundColor3  = CUCUMBER.ElementColor
-ClearBtn.TextColor3        = CUCUMBER.SchemeColor
-ClearBtn.TextSize          = 13
-ClearBtn.Font              = Enum.Font.GothamBold
-ClearBtn.BorderSizePixel   = 0
-ClearBtn.Parent            = Window
-Instance.new("UICorner", ClearBtn).CornerRadius = UDim.new(0, 6)
-ClearBtn.MouseButton1Click:Connect(function()
-    ScriptBox.Text = ""
-end)
+local TabsBar = New("Frame", {
+    Position = UDim2.fromOffset(
+        8,
+        47
+    ),
 
-local ExecBtn = Instance.new("TextButton")
-ExecBtn.Text              = "▶  Execute"
-ExecBtn.Size              = UDim2.new(1, -120, 0, 30)
-ExecBtn.Position          = UDim2.new(0, 110, 1, -44)
-ExecBtn.BackgroundColor3  = CUCUMBER.ElementColor
-ExecBtn.TextColor3        = CUCUMBER.SchemeColor
-ExecBtn.TextSize          = 14
-ExecBtn.Font              = Enum.Font.GothamBold
-ExecBtn.BorderSizePixel   = 0
-ExecBtn.Parent            = Window
-Instance.new("UICorner", ExecBtn).CornerRadius = UDim.new(0, 6)
-Instance.new("UIStroke", ExecBtn).Color = CUCUMBER.SchemeColor
+    Size = UDim2.new(
+        1,
+        -16,
+        0,
+        35
+    ),
 
-ExecBtn.MouseButton1Click:Connect(function()
-    local code = ScriptBox.Text
-    if code == "" then return end
-    local ok, err = pcall(loadstring(code))
-    if not ok then
-        warn("[Cucumber] Ошибка: " .. tostring(err))
+    BackgroundColor3 = C.Lines,
+
+    BorderSizePixel = 0,
+
+    ClipsDescendants = true,
+}, Window)
+
+Corner(TabsBar, 6)
+
+local TabsScroll = New("ScrollingFrame", {
+    Position = UDim2.fromOffset(
+        4,
+        3
+    ),
+
+    Size = UDim2.new(
+        1,
+        -48,
+        1,
+        -6
+    ),
+
+    BackgroundTransparency = 1,
+
+    BorderSizePixel = 0,
+
+    CanvasSize = UDim2.fromOffset(
+        0,
+        0
+    ),
+
+    AutomaticCanvasSize =
+        Enum.AutomaticSize.X,
+
+    ScrollingDirection =
+        Enum.ScrollingDirection.X,
+
+    ScrollBarThickness = 0,
+}, TabsBar)
+
+local TabLayout = New("UIListLayout", {
+    FillDirection =
+        Enum.FillDirection.Horizontal,
+
+    Padding = UDim.new(
+        0,
+        4
+    ),
+
+    SortOrder =
+        Enum.SortOrder.LayoutOrder,
+}, TabsScroll)
+
+local AddTab = New("TextButton", {
+    Position = UDim2.new(
+        1,
+        -36,
+        0,
+        3
+    ),
+
+    Size = UDim2.fromOffset(
+        32,
+        29
+    ),
+
+    BackgroundColor3 = C.Button,
+
+    Text = "+",
+
+    TextColor3 = C.Green,
+
+    TextSize = 18,
+
+    Font = Enum.Font.GothamBold,
+
+    BorderSizePixel = 0,
+
+    AutoButtonColor = false,
+}, TabsBar)
+
+Corner(AddTab, 6)
+
+--==================================================
+-- EDITOR
+--==================================================
+
+local Editor = New("Frame", {
+    Position = UDim2.fromOffset(
+        8,
+        90
+    ),
+
+    Size = UDim2.new(
+        1,
+        -16,
+        1,
+        -148
+    ),
+
+    BackgroundColor3 = C.Editor,
+
+    BorderSizePixel = 0,
+
+    ClipsDescendants = true,
+}, Window)
+
+Corner(Editor, 7)
+
+Stroke(
+    Editor,
+    Color3.fromRGB(
+        25,
+        65,
+        40
+    ),
+    1,
+    0.25
+)
+
+--==================================================
+-- LINE NUMBERS
+--==================================================
+
+local LineNumbers = New("TextLabel", {
+    Position = UDim2.fromOffset(
+        0,
+        0
+    ),
+
+    Size = UDim2.fromOffset(
+        45,
+        1000
+    ),
+
+    BackgroundColor3 = C.Lines,
+
+    BorderSizePixel = 0,
+
+    Text = "1",
+
+    TextColor3 = C.Muted,
+
+    TextSize = 13,
+
+    Font = Enum.Font.Code,
+
+    TextXAlignment =
+        Enum.TextXAlignment.Right,
+
+    TextYAlignment =
+        Enum.TextYAlignment.Top,
+
+    RichText = false,
+
+    ZIndex = 5,
+}, Editor)
+
+New("UIPadding", {
+    PaddingTop = UDim.new(
+        0,
+        8
+    ),
+
+    PaddingRight = UDim.new(
+        0,
+        8
+    ),
+}, LineNumbers)
+
+New("Frame", {
+    Position = UDim2.fromOffset(
+        45,
+        0
+    ),
+
+    Size = UDim2.new(
+        0,
+        1,
+        1,
+        0
+    ),
+
+    BackgroundColor3 =
+        Color3.fromRGB(
+            25,
+            65,
+            40
+        ),
+
+    BorderSizePixel = 0,
+
+    ZIndex = 5,
+}, Editor)
+
+--==================================================
+-- SCROLLING FRAME
+--==================================================
+
+local Scroll = New("ScrollingFrame", {
+    Position = UDim2.fromOffset(
+        46,
+        0
+    ),
+
+    Size = UDim2.new(
+        1,
+        -46,
+        1,
+        0
+    ),
+
+    BackgroundTransparency = 1,
+
+    BorderSizePixel = 0,
+
+    CanvasSize = UDim2.fromOffset(
+        700,
+        500
+    ),
+
+    ScrollBarThickness = 5,
+
+    ScrollBarImageColor3 =
+        C.Green,
+
+    ScrollBarImageTransparency =
+        0.35,
+
+    ScrollingDirection =
+        Enum.ScrollingDirection.XY,
+
+    ClipsDescendants = true,
+}, Editor)
+
+--==================================================
+-- HIGHLIGHT LABEL
+--==================================================
+
+local HighlightLabel = New("TextLabel", {
+    Position = UDim2.fromOffset(
+        8,
+        8
+    ),
+
+    Size = UDim2.fromOffset(
+        700,
+        500
+    ),
+
+    BackgroundTransparency = 1,
+
+    Text = "",
+
+    TextColor3 = C.Text,
+
+    TextSize = 13,
+
+    Font = Enum.Font.Code,
+
+    TextXAlignment =
+        Enum.TextXAlignment.Left,
+
+    TextYAlignment =
+        Enum.TextYAlignment.Top,
+
+    TextWrapped = false,
+
+    RichText = true,
+
+    ZIndex = 1,
+}, Scroll)
+
+--==================================================
+-- REAL TEXTBOX
+--==================================================
+
+local TextBox = New("TextBox", {
+    Position = UDim2.fromOffset(
+        8,
+        8
+    ),
+
+    Size = UDim2.fromOffset(
+        700,
+        500
+    ),
+
+    BackgroundTransparency = 1,
+
+    Text = "",
+
+    PlaceholderText =
+        "-- Write your Lua code here...",
+
+    PlaceholderColor3 =
+        Color3.fromRGB(
+            55,
+            85,
+            65
+        ),
+
+    -- IMPORTANT:
+    -- textbox text is invisible
+    -- highlight label underneath is visible
+
+    TextColor3 = C.Text,
+
+    TextTransparency = 0,
+
+    TextSize = 13,
+
+    Font = Enum.Font.Code,
+
+    TextXAlignment =
+        Enum.TextXAlignment.Left,
+
+    TextYAlignment =
+        Enum.TextYAlignment.Top,
+
+    TextWrapped = false,
+
+    MultiLine = true,
+
+    ClearTextOnFocus = false,
+
+    BorderSizePixel = 0,
+
+    ZIndex = 2,
+}, Scroll)
+
+--==================================================
+-- TAB DATA
+--==================================================
+
+local Tabs = {}
+
+local CurrentTab = nil
+
+local ChangingTab = false
+
+local function CreateTab(name)
+
+    if #Tabs >= MAX_TABS then
+        return nil
     end
-end)
 
-local dragging, dragStart, startPos
-Header.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging  = true
-        dragStart = input.Position
-        startPos  = Window.Position
+    local tab = {
+        Name = name,
+        Code = "",
+    }
+
+    table.insert(
+        Tabs,
+        tab
+    )
+
+    return tab
+end
+
+--==================================================
+-- UPDATE EDITOR
+--==================================================
+
+local Updating = false
+
+local function UpdateEditor()
+
+    if Updating then
+        return
     end
-end)
-Header.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = false
+
+    if not CurrentTab then
+        return
     end
-end)
-UIS.InputChanged:Connect(function(input)
-    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = input.Position - dragStart
-        Window.Position = UDim2.new(
-            startPos.X.Scale, startPos.X.Offset + delta.X,
-            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+
+    Updating = true
+
+    -- save current text
+    CurrentTab.Code = TextBox.Text
+
+    local code = TextBox.Text
+        :gsub("\r\n", "\n")
+        :gsub("\r", "\n")
+
+    local lines = string.split(
+        code,
+        "\n"
+    )
+
+    local lineCount = math.max(
+        #lines,
+        1
+    )
+
+    --==============================================
+    -- LINE NUMBERS
+    --==============================================
+
+    local numbers = {}
+
+    for i = 1, lineCount do
+        numbers[i] = tostring(i)
+    end
+
+    LineNumbers.Text =
+        table.concat(
+            numbers,
+            "\n"
         )
+
+    --==============================================
+    -- SYNTAX
+    --==============================================
+
+    HighlightLabel.Text =
+        HighlightCode(code)
+
+    --==============================================
+    -- SIZE
+    --==============================================
+
+    local longest = 1
+
+    for _, line in ipairs(lines) do
+
+        if #line > longest then
+            longest = #line
+        end
+
     end
+
+    local width = math.max(
+        700,
+        longest * 8 + 40
+    )
+
+    local height = math.max(
+        500,
+        lineCount * 18 + 20
+    )
+
+    HighlightLabel.Size =
+        UDim2.fromOffset(
+            width,
+            height
+        )
+
+    TextBox.Size =
+        UDim2.fromOffset(
+            width,
+            height
+        )
+
+    LineNumbers.Size =
+        UDim2.fromOffset(
+            45,
+            height
+        )
+
+    -- IMPORTANT:
+    -- do NOT move TextBox or Highlight
+    -- when scrolling.
+    --
+    -- ScrollingFrame moves both automatically.
+
+    Scroll.CanvasSize =
+        UDim2.fromOffset(
+            width + 20,
+            height + 20
+        )
+
+    Updating = false
+end
+
+--==================================================
+-- SAVE TEXT
+--==================================================
+
+TextBox:GetPropertyChangedSignal(
+    "Text"
+):Connect(function()
+
+    if CurrentTab then
+        CurrentTab.Code =
+            TextBox.Text
+    end
+
+    UpdateEditor()
+
 end)
 
-UIS.InputBegan:Connect(function(input, gpe)
-    if not gpe and input.KeyCode == Enum.KeyCode.RightShift then
-        Window.Visible = not Window.Visible
-    end
+--==================================================
+-- SCROLL ONLY LINE NUMBERS
+--==================================================
+
+Scroll:GetPropertyChangedSignal(
+    "CanvasPosition"
+):Connect(function()
+
+    local y =
+        Scroll.CanvasPosition.Y
+
+    -- ONLY line numbers move manually.
+    -- TextBox and Highlight are children of
+    -- ScrollingFrame and move automatically.
+
+    LineNumbers.Position =
+        UDim2.fromOffset(
+            0,
+            -y
+        )
+
 end)
+
+--==================================================
+-- SWITCH TAB
+--==================================================
+
+local function SwitchTab(tab)
+
+    if not tab then
+        return
+    end
+
+    if CurrentTab == tab then
+        return
+    end
+
+    --==============================================
+    -- SAVE OLD TAB FIRST
+    --==============================================
+
+    if CurrentTab then
+        CurrentTab.Code =
+            TextBox.Text
+    end
+
+    CurrentTab = tab
+
+    ChangingTab = true
+
+    --==============================================
+    -- LOAD NEW TAB
+    --==============================================
+
+    TextBox.Text =
+        tab.Code or ""
+
+    ChangingTab = false
+
+    Scroll.CanvasPosition =
+        Vector2.new(
+            0,
+            0
+        )
+
+    UpdateEditor()
+
+end
+
+--==================================================
+-- REFRESH TAB BUTTONS
+--==================================================
+
+local function RefreshTabs()
+
+    for _, child in ipairs(
+        TabsScroll:GetChildren()
+    ) do
+
+        if child:IsA("TextButton") then
+            child:Destroy()
+        end
+
+    end
+
+    for index, tab in ipairs(Tabs) do
+
+        local width = math.max(
+            105,
+            #tab.Name * 7 + 40
+        )
+
+        local button = New("TextButton", {
+            Size = UDim2.fromOffset(
+                width,
+                29
+            ),
+
+            BackgroundColor3 =
+                tab == CurrentTab
+                and C.ButtonHover
+                or C.Button,
+
+            Text = "",
+
+            BorderSizePixel = 0,
+
+            AutoButtonColor = false,
+
+            LayoutOrder = index,
+        }, TabsScroll)
+
+        Corner(
+            button,
+            5
+        )
+
+        local name = New("TextLabel", {
+            Position = UDim2.fromOffset(
+                8,
+                0
+            ),
+
+            Size = UDim2.new(
+                1,
+                -30,
+                1,
+                0
+            ),
+
+            BackgroundTransparency = 1,
+
+            Text = tab.Name,
+
+            TextColor3 =
+                tab == CurrentTab
+                and C.Green
+                or C.Text,
+
+            TextSize = 11,
+
+            Font =
+                Enum.Font.GothamMedium,
+
+            TextXAlignment =
+                Enum.TextXAlignment.Left,
+        }, button)
+
+        local close = New("TextButton", {
+            Position = UDim2.new(
+                1,
+                -25,
+                0,
+                0
+            ),
+
+            Size = UDim2.fromOffset(
+                24,
+                29
+            ),
+
+            BackgroundTransparency = 1,
+
+            Text = "×",
+
+            TextColor3 = C.Muted,
+
+            TextSize = 14,
+
+            Font =
+                Enum.Font.GothamBold,
+
+            BorderSizePixel = 0,
+        }, button)
+
+        --==========================================
+        -- SWITCH
+        --==========================================
+
+        button.MouseButton1Click:Connect(
+            function()
+
+                SwitchTab(tab)
+
+                RefreshTabs()
+
+            end
+        )
+
+        --==========================================
+        -- CLOSE
+        --==========================================
+
+        close.MouseButton1Click:Connect(
+            function()
+
+                -- save before removing
+                if CurrentTab then
+                    CurrentTab.Code =
+                        TextBox.Text
+                end
+
+                local removedIndex
+
+                for i, t in ipairs(Tabs) do
+
+                    if t == tab then
+
+                        removedIndex = i
+
+                        break
+                    end
+
+                end
+
+                if not removedIndex then
+                    return
+                end
+
+                table.remove(
+                    Tabs,
+                    removedIndex
+                )
+
+                -- no tabs left
+                if #Tabs == 0 then
+
+                    local newTab =
+                        CreateTab(
+                            "Script 1"
+                        )
+
+                    CurrentTab = newTab
+
+                    TextBox.Text = ""
+
+                -- closed active tab
+                elseif CurrentTab == tab then
+
+                    local newIndex =
+                        math.clamp(
+                            removedIndex,
+                            1,
+                            #Tabs
+                        )
+
+                    CurrentTab =
+                        Tabs[newIndex]
+
+                    ChangingTab = true
+
+                    TextBox.Text =
+                        CurrentTab.Code
+
+                    ChangingTab = false
+
+                end
+
+                Scroll.CanvasPosition =
+                    Vector2.new(
+                        0,
+                        0
+                    )
+
+                RefreshTabs()
+
+                UpdateEditor()
+
+            end
+        )
+
+    end
+end
+
+--==================================================
+-- ADD TAB
+--==================================================
+
+AddTab.MouseButton1Click:Connect(
+    function()
+
+        if #Tabs >= MAX_TABS then
+
+            Status.Text =
+                "● Max tabs"
+
+            Status.TextColor3 =
+                Color3.fromRGB(
+                    220,
+                    160,
+                    80
+                )
+
+            return
+        end
+
+        -- save old
+        if CurrentTab then
+            CurrentTab.Code =
+                TextBox.Text
+        end
+
+        local newTab =
+            CreateTab(
+                "Script " .. (#Tabs + 1)
+            )
+
+        CurrentTab = newTab
+
+        ChangingTab = true
+
+        TextBox.Text = ""
+
+        ChangingTab = false
+
+        Scroll.CanvasPosition =
+            Vector2.new(
+                0,
+                0
+            )
+
+        RefreshTabs()
+
+        UpdateEditor()
+
+    end
+)
+
+--==================================================
+-- FIRST TAB
+--==================================================
+
+CurrentTab =
+    CreateTab(
+        "Script 1"
+    )
+
+RefreshTabs()
+
+UpdateEditor()
+
+--==================================================
+-- STATUS
+--==================================================
+
+local function SetStatus(text, color)
+
+    Status.Text =
+        "● " .. text
+
+    Status.TextColor3 =
+        color or C.Muted
+
+end
+
+--==================================================
+-- BOTTOM
+--==================================================
+
+local Bottom = New("Frame", {
+    Position = UDim2.new(
+        0,
+        8,
+        1,
+        -50
+    ),
+
+    Size = UDim2.new(
+        1,
+        -16,
+        0,
+        38
+    ),
+
+    BackgroundTransparency = 1,
+}, Window)
+
+local function MakeButton(
+    text,
+    x,
+    width
+)
+
+    local button = New("TextButton", {
+        Position = UDim2.fromOffset(
+            x,
+            2
+        ),
+
+        Size = UDim2.fromOffset(
+            width,
+            34
+        ),
+
+        BackgroundColor3 = C.Button,
+
+        Text = text,
+
+        TextColor3 = C.Green,
+
+        TextSize = 11,
+
+        Font = Enum.Font.GothamBold,
+
+        BorderSizePixel = 0,
+
+        AutoButtonColor = false,
+    }, Bottom)
+
+    Corner(
+        button,
+        6
+    )
+
+    Stroke(
+        button,
+        C.Green,
+        1,
+        0.65
+    )
+
+    button.MouseEnter:Connect(
+        function()
+
+            TweenService:Create(
+                button,
+                TweenInfo.new(
+                    0.1
+                ),
+                {
+                    BackgroundColor3 =
+                        C.ButtonHover
+                }
+            ):Play()
+
+        end
+    )
+
+    button.MouseLeave:Connect(
+        function()
+
+            TweenService:Create(
+                button,
+                TweenInfo.new(
+                    0.1
+                ),
+                {
+                    BackgroundColor3 =
+                        C.Button
+                }
+            ):Play()
+
+        end
+    )
+
+    return button
+end
+
+local Clear =
+    MakeButton(
+        "🗑 Clear",
+        0,
+        90
+    )
+
+local Copy =
+    MakeButton(
+        "📋 Copy",
+        98,
+        90
+    )
+
+local Execute =
+    MakeButton(
+        "▶ Execute",
+        196,
+        110
+    )
+
+--==================================================
+-- CLEAR
+--==================================================
+
+Clear.MouseButton1Click:Connect(
+    function()
+
+        TextBox.Text = ""
+
+        if CurrentTab then
+            CurrentTab.Code = ""
+        end
+
+        SetStatus(
+            "Cleared"
+        )
+
+        task.delay(
+            1.2,
+            function()
+
+                if ScreenGui.Parent then
+                    SetStatus("Ready")
+                end
+
+            end
+        )
+
+    end
+)
+
+--==================================================
+-- COPY
+--==================================================
+
+Copy.MouseButton1Click:Connect(
+    function()
+
+        local code =
+            TextBox.Text
+
+        if code == "" then
+
+            SetStatus(
+                "Empty",
+                Color3.fromRGB(
+                    220,
+                    160,
+                    80
+                )
+            )
+
+            return
+        end
+
+        if setclipboard then
+
+            setclipboard(
+                code
+            )
+
+            SetStatus(
+                "Copied",
+                C.Green
+            )
+
+        else
+
+            SetStatus(
+                "No clipboard",
+                Color3.fromRGB(
+                    220,
+                    90,
+                    90
+                )
+            )
+
+        end
+
+    end
+)
+
+--==================================================
+-- EXECUTE
+--==================================================
+
+Execute.MouseButton1Click:Connect(
+    function()
+
+        local code =
+            TextBox.Text
+
+        if code == "" then
+
+            SetStatus(
+                "Empty",
+                Color3.fromRGB(
+                    220,
+                    160,
+                    80
+                )
+            )
+
+            return
+        end
+
+        if not loadstring then
+
+            SetStatus(
+                "No loadstring",
+                Color3.fromRGB(
+                    220,
+                    90,
+                    90
+                )
+            )
+
+            return
+        end
+
+        SetStatus(
+            "Executing...",
+            C.Green
+        )
+
+        task.spawn(
+            function()
+
+                local okCompile, fn =
+                    pcall(
+                        loadstring,
+                        code
+                    )
+
+                if not okCompile
+                    or not fn then
+
+                    SetStatus(
+                        "Syntax Error",
+                        Color3.fromRGB(
+                            230,
+                            80,
+                            80
+                        )
+                    )
+
+                    warn(
+                        "[INZEKTOR]",
+                        fn
+                    )
+
+                    return
+                end
+
+                local okRun, result =
+                    pcall(fn)
+
+                if okRun then
+
+                    SetStatus(
+                        "Executed",
+                        C.Green
+                    )
+
+                else
+
+                    SetStatus(
+                        "Runtime Error",
+                        Color3.fromRGB(
+                            230,
+                            80,
+                            80
+                        )
+                    )
+
+                    warn(
+                        "[INZEKTOR]",
+                        result
+                    )
+
+                end
+
+            end
+        )
+
+    end
+)
+
+--==================================================
+-- DRAG
+--==================================================
+
+local Dragging = false
+local DragStart
+local StartPosition
+
+Header.InputBegan:Connect(
+    function(input)
+
+        if input.UserInputType ==
+            Enum.UserInputType.MouseButton1 then
+
+            Dragging = true
+
+            DragStart =
+                input.Position
+
+            StartPosition =
+                Window.Position
+
+        end
+
+    end
+)
+
+Header.InputEnded:Connect(
+    function(input)
+
+        if input.UserInputType ==
+            Enum.UserInputType.MouseButton1 then
+
+            Dragging = false
+
+        end
+
+    end
+)
+
+UIS.InputChanged:Connect(
+    function(input)
+
+        if not Dragging then
+            return
+        end
+
+        if input.UserInputType ~=
+            Enum.UserInputType.MouseMovement then
+            return
+        end
+
+        local delta =
+            input.Position -
+            DragStart
+
+        Window.Position =
+            UDim2.new(
+                StartPosition.X.Scale,
+                StartPosition.X.Offset +
+                    delta.X,
+
+                StartPosition.Y.Scale,
+                StartPosition.Y.Offset +
+                    delta.Y
+            )
+
+    end
+)
+
+--==================================================
+-- RIGHT SHIFT
+--==================================================
+
+UIS.InputBegan:Connect(
+    function(
+        input,
+        processed
+    )
+
+        if processed then
+            return
+        end
+
+        if input.KeyCode ==
+            Enum.KeyCode.RightShift then
+
+            Window.Visible =
+                not Window.Visible
+
+        end
+
+    end
+)
+
+--==================================================
+-- READY
+--==================================================
+
+SetStatus(
+    "Ready",
+    C.Muted
+)
+
+print(
+    "[INZEKTOR] Loaded"
+)

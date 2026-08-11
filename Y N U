@@ -11,12 +11,14 @@ local inputConnection = nil -- Ссылка на обработчик клави
 -- ==========================================
 local function RunScript()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/solaris%20ui%20cucumber%20hub"))()
-	print("Скрипт Y запущен!")
 end
 
 local function RunBlueScript()
 	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/kastom%20anti%20kick"))()
-	print("Скрипт U запущен!")
+end
+
+local function RunGreenScript()
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/delivery-2347/script-hub/refs/heads/main/INZEKTOR"))()
 end
 
 local function RunNoScript()
@@ -73,7 +75,8 @@ end
 
 local buttonY = createButton("ButtonYes", "Y", Color3.fromRGB(46, 204, 113), 1)
 local buttonU = createButton("ButtonBlue", "U", Color3.fromRGB(52, 152, 219), 2)
-local buttonN = createButton("ButtonNo", "N", Color3.fromRGB(231, 76, 60), 3)
+local buttonT = createButton("Buttoninzektor", "T", Color3.fromRGB(0, 200, 0), 3)
+local buttonN = createButton("ButtonNo", "N", Color3.fromRGB(231, 76, 60), 4)
 
 -- ==========================================
 -- ЛОГИКА УДАЛЕНИЯ И АКТИВАЦИИ
@@ -105,6 +108,10 @@ buttonU.MouseButton1Click:Connect(function()
 	handleAction(RunBlueScript)
 end)
 
+buttonT.MouseButton1Click:Connect(function()
+	handleAction(RunGreenScript)
+end)
+
 buttonN.MouseButton1Click:Connect(function()
 	handleAction(RunNoScript)
 end)
@@ -117,6 +124,8 @@ inputConnection = UserInputService.InputBegan:Connect(function(input, gameProces
 		handleAction(RunScript)
 	elseif input.KeyCode == Enum.KeyCode.U then
 		handleAction(RunBlueScript)
+	elseif input.KeyCode == Enum.KeyCode.T then
+    	handleAction(RunGreenScript)
 	elseif input.KeyCode == Enum.KeyCode.N then
 		handleAction(RunNoScript)
 	end

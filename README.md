@@ -7,4 +7,5 @@
 Для связи и получения разрешения писать сюда:
 
 https://discord.com/users/1499474505943486489 -- discord
+
 https://t.me/cucumber_2347 -- telegram

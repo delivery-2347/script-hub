@@ -1,3 +1,5 @@
-MAI SKRIPTI PZ NE PIZDITI BEZ RAZTISENIYA ESSLI HOTITE PZZZZ PISITE SUDA 
+ПОЖАЛУЙСТА, НЕ КОПИРУЙТЕ МОИ СКРИПТЫ БЕЗ РАЗРЕШЕНИЯ!
+Если вы хотите использовать этот код или взять его часть,
+пожалуйста, сначала НАПИШИТЕ МНЕ СЮДА: 
 https://discord.com/users/1499474505943486489 -- discord
 https://t.me/cucumber_2347 -- telegram

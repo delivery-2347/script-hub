@@ -1,0 +1,155 @@
+-- 🥒 Cucumber Executor — LocalScript
+-- Вставь в StarterPlayerScripts или запусти через executor
+
+local CUCUMBER = {
+    SchemeColor = Color3.fromRGB(45, 160, 95),
+    Background  = Color3.fromRGB(8,  18,  12),
+    Header      = Color3.fromRGB(12, 30,  20),
+    TextColor   = Color3.fromRGB(230,230, 230),
+    ElementColor= Color3.fromRGB(18, 55,  38),
+}
+
+local Players       = game:GetService("Players")
+local CoreGui       = game:GetService("CoreGui")
+local TweenService  = game:GetService("TweenService")
+local UIS           = game:GetService("UserInputService")
+
+if CoreGui:FindFirstChild("CucumberExecutor") then
+    CoreGui:FindFirstChild("CucumberExecutor"):Destroy()
+end
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name            = "CucumberExecutor"
+ScreenGui.ResetOnSpawn    = false
+ScreenGui.ZIndexBehavior  = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent          = CoreGui
+
+local Window = Instance.new("Frame")
+Window.Name              = "Window"
+Window.Size              = UDim2.new(0, 460, 0, 320)
+Window.Position          = UDim2.new(0.5, -230, 0.5, -160)
+Window.BackgroundColor3  = CUCUMBER.Background
+Window.BorderSizePixel   = 0
+Window.ClipsDescendants  = true
+Window.Parent            = ScreenGui
+Instance.new("UICorner", Window).CornerRadius = UDim.new(0, 10)
+Instance.new("UIStroke", Window).Color = CUCUMBER.SchemeColor
+
+local Header = Instance.new("Frame")
+Header.Name             = "Header"
+Header.Size             = UDim2.new(1, 0, 0, 36)
+Header.BackgroundColor3 = CUCUMBER.Header
+Header.BorderSizePixel  = 0
+Header.Parent           = Window
+
+local Title = Instance.new("TextLabel")
+Title.Text              = "🥒 Cucumber Executor"
+Title.Size              = UDim2.new(1, -40, 1, 0)
+Title.Position          = UDim2.new(0, 12, 0, 0)
+Title.BackgroundTransparency = 1
+Title.TextColor3        = CUCUMBER.SchemeColor
+Title.TextSize          = 14
+Title.Font              = Enum.Font.GothamBold
+Title.TextXAlignment    = Enum.TextXAlignment.Left
+Title.Parent            = Header
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Text               = "✕"
+CloseBtn.Size               = UDim2.new(0, 28, 0, 28)
+CloseBtn.Position           = UDim2.new(1, -34, 0, 4)
+CloseBtn.BackgroundColor3   = Color3.fromRGB(180, 60, 60)
+CloseBtn.TextColor3         = CUCUMBER.TextColor
+CloseBtn.TextSize           = 12
+CloseBtn.Font               = Enum.Font.GothamBold
+CloseBtn.BorderSizePixel    = 0
+CloseBtn.Parent             = Header
+Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+local ScriptBox = Instance.new("TextBox")
+ScriptBox.Name                 = "ScriptBox"
+ScriptBox.Size                 = UDim2.new(1, -20, 1, -110)
+ScriptBox.Position             = UDim2.new(0, 10, 0, 46)
+ScriptBox.BackgroundColor3     = CUCUMBER.ElementColor
+ScriptBox.TextColor3           = CUCUMBER.TextColor
+ScriptBox.PlaceholderText      = "-- Вставьте ваш скрипт сюда..."
+ScriptBox.PlaceholderColor3    = Color3.fromRGB(60, 120, 80)
+ScriptBox.TextSize             = 13
+ScriptBox.Font                 = Enum.Font.Code
+ScriptBox.TextXAlignment       = Enum.TextXAlignment.Left
+ScriptBox.TextYAlignment       = Enum.TextYAlignment.Top
+ScriptBox.MultiLine            = true
+ScriptBox.ClearTextOnFocus     = false
+ScriptBox.TextWrapped          = true
+ScriptBox.BorderSizePixel      = 0
+ScriptBox.Parent               = Window
+Instance.new("UICorner", ScriptBox).CornerRadius = UDim.new(0, 7)
+Instance.new("UIPadding", ScriptBox).PaddingLeft = UDim.new(0, 8)
+
+local ClearBtn = Instance.new("TextButton")
+ClearBtn.Text              = "Clear"
+ClearBtn.Size              = UDim2.new(0, 90, 0, 30)
+ClearBtn.Position          = UDim2.new(0, 10, 1, -44)
+ClearBtn.BackgroundColor3  = CUCUMBER.ElementColor
+ClearBtn.TextColor3        = CUCUMBER.SchemeColor
+ClearBtn.TextSize          = 13
+ClearBtn.Font              = Enum.Font.GothamBold
+ClearBtn.BorderSizePixel   = 0
+ClearBtn.Parent            = Window
+Instance.new("UICorner", ClearBtn).CornerRadius = UDim.new(0, 6)
+ClearBtn.MouseButton1Click:Connect(function()
+    ScriptBox.Text = ""
+end)
+
+local ExecBtn = Instance.new("TextButton")
+ExecBtn.Text              = "▶  Execute"
+ExecBtn.Size              = UDim2.new(1, -120, 0, 30)
+ExecBtn.Position          = UDim2.new(0, 110, 1, -44)
+ExecBtn.BackgroundColor3  = CUCUMBER.ElementColor
+ExecBtn.TextColor3        = CUCUMBER.SchemeColor
+ExecBtn.TextSize          = 14
+ExecBtn.Font              = Enum.Font.GothamBold
+ExecBtn.BorderSizePixel   = 0
+ExecBtn.Parent            = Window
+Instance.new("UICorner", ExecBtn).CornerRadius = UDim.new(0, 6)
+Instance.new("UIStroke", ExecBtn).Color = CUCUMBER.SchemeColor
+
+ExecBtn.MouseButton1Click:Connect(function()
+    local code = ScriptBox.Text
+    if code == "" then return end
+    local ok, err = pcall(loadstring(code))
+    if not ok then
+        warn("[Cucumber] Ошибка: " .. tostring(err))
+    end
+end)
+
+local dragging, dragStart, startPos
+Header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging  = true
+        dragStart = input.Position
+        startPos  = Window.Position
+    end
+end)
+Header.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+UIS.InputChanged:Connect(function(input)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStart
+        Window.Position = UDim2.new(
+            startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+UIS.InputBegan:Connect(function(input, gpe)
+    if not gpe and input.KeyCode == Enum.KeyCode.RightShift then
+        Window.Visible = not Window.Visible
+    end
+end)

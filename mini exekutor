@@ -1,0 +1,279 @@
+--[[ --------------------------------------------------------------
+CUCUMBER Theme
+----------------------------------------------------------------- ]]
+
+local CUCUMBER = {
+    SchemeColor  = Color3.fromRGB(45, 160, 95),
+    Background   = Color3.fromRGB(8, 18, 12),
+    Header       = Color3.fromRGB(12, 30, 20),
+    TextColor    = Color3.fromRGB(230, 230, 230),
+    ElementColor = Color3.fromRGB(18, 55, 38)
+}
+
+--[[ --------------------------------------------------------------
+Helper: create a coloured Frame
+----------------------------------------------------------------- ]]
+
+local function newFrame(parent, props)
+    props = props or {}
+
+    local f = Instance.new("Frame")
+
+    f.BackgroundColor3 =
+        props.BackgroundColor3
+        or props.Background
+        or CUCUMBER.Background
+
+    f.BorderSizePixel = 0
+
+    for k, v in pairs(props) do
+        f[k] = v
+    end
+
+    f.Parent = parent
+
+    return f
+end
+
+--[[ --------------------------------------------------------------
+Helper: create a TextLabel
+----------------------------------------------------------------- ]]
+
+local function newLabel(parent, text, props)
+    props = props or {}
+
+    local l = Instance.new("TextLabel")
+
+    l.Text = text
+    l.TextColor3 = props.TextColor or CUCUMBER.TextColor
+    l.BackgroundTransparency = 1
+    l.Font = props.Font or Enum.Font.SourceSansBold
+    l.TextSize = props.TextSize or 14
+    l.Size = props.Size or UDim2.new(0, 200, 0, 20)
+    l.Position = props.Position or UDim2.new(0, 0, 0, 0)
+    l.AnchorPoint = props.AnchorPoint or Vector2.new(0, 0)
+
+    l.Parent = parent
+
+    return l
+end
+
+--[[ --------------------------------------------------------------
+Build UI
+----------------------------------------------------------------- ]]
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Remove old GUI if it already exists
+local oldGui = playerGui:FindFirstChild("CucumberScriptExecutor")
+
+if oldGui then
+    oldGui:Destroy()
+end
+
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CucumberScriptExecutor"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+--[[ --------------------------------------------------------------
+Main background
+----------------------------------------------------------------- ]]
+
+local mainBg = newFrame(screenGui, {
+    Size = UDim2.new(0, 400, 0, 230),
+    Position = UDim2.new(0.5, 0, 0.5, 0),
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    BackgroundColor3 = CUCUMBER.Background,
+})
+
+--[[ --------------------------------------------------------------
+Header
+----------------------------------------------------------------- ]]
+
+local header = newFrame(mainBg, {
+    Size = UDim2.new(1, 0, 0, 30),
+    Position = UDim2.new(0, 0, 0, 0),
+    BackgroundColor3 = CUCUMBER.Header,
+})
+
+newLabel(header, "CUCUMBER Script Executor", {
+    TextColor = CUCUMBER.TextColor,
+    Size = UDim2.new(1, -10, 1, 0),
+    Position = UDim2.new(0, 5, 0, 0),
+    TextSize = 16,
+    Font = Enum.Font.SourceSansBold,
+    TextXAlignment = Enum.TextXAlignment.Left,
+})
+
+--[[ --------------------------------------------------------------
+Code input
+----------------------------------------------------------------- ]]
+
+local codeBox = Instance.new("TextBox")
+
+codeBox.Size = UDim2.new(1, -20, 0, 150)
+codeBox.Position = UDim2.new(0, 10, 0, 40)
+
+codeBox.BackgroundColor3 = CUCUMBER.Background
+codeBox.TextColor3 = CUCUMBER.TextColor
+
+codeBox.TextSize = 14
+codeBox.Font = Enum.Font.Code
+
+codeBox.TextWrapped = true
+codeBox.MultiLine = true
+codeBox.ClearTextOnFocus = false
+
+codeBox.TextXAlignment = Enum.TextXAlignment.Left
+codeBox.TextYAlignment = Enum.TextYAlignment.Top
+
+codeBox.PlaceholderText = "-- Enter your Lua code here..."
+codeBox.PlaceholderColor3 = Color3.fromRGB(120, 120, 120)
+
+codeBox.Text = ""
+
+codeBox.Parent = mainBg
+
+--[[ --------------------------------------------------------------
+Execute button
+----------------------------------------------------------------- ]]
+
+local execBtn = Instance.new("TextButton")
+
+execBtn.Size = UDim2.new(0, 120, 0, 30)
+execBtn.Position = UDim2.new(0, 10, 1, -40)
+
+execBtn.Text = "Execute"
+
+execBtn.Font = Enum.Font.SourceSansBold
+execBtn.TextSize = 14
+
+execBtn.BackgroundColor3 = CUCUMBER.ElementColor
+execBtn.TextColor3 = CUCUMBER.TextColor
+
+execBtn.BorderSizePixel = 0
+
+execBtn.Parent = mainBg
+
+--[[ --------------------------------------------------------------
+Execute logic
+----------------------------------------------------------------- ]]
+
+execBtn.MouseButton1Click:Connect(function()
+
+    local code = codeBox.Text
+
+    if code == "" then
+        execBtn.Text = "Enter code!"
+        
+        task.delay(1, function()
+            if execBtn then
+                execBtn.Text = "Execute"
+            end
+        end)
+
+        return
+    end
+
+    -- loadstring
+    local func, err = loadstring(code)
+
+    if not func then
+        execBtn.Text = "Syntax Error log consol"
+
+        warn("[CUCUMBER] Syntax error:", err)
+
+        task.delay(1, function()
+            if execBtn then
+                execBtn.Text = "Execute"
+            end
+        end)
+
+        return
+    end
+
+    -- Execute safely
+    local success, result = pcall(function()
+        return func()
+    end)
+
+    if success then
+
+        execBtn.Text = "Executed "
+
+        task.delay(1, function()
+            if execBtn then
+                execBtn.Text = "Execute"
+            end
+        end)
+
+    else
+
+        execBtn.Text = "Error!"
+
+        warn("[CUCUMBER] Execution error:", result)
+
+        task.delay(1, function()
+            if execBtn then
+                execBtn.Text = "Execute"
+            end
+        end)
+
+    end
+end)
+
+--[[ --------------------------------------------------------------
+Drag handling
+----------------------------------------------------------------- ]]
+
+local dragging = false
+local dragStart = nil
+local startPos = nil
+
+mainBg.InputBegan:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+
+        dragging = true
+
+        dragStart = input.Position
+        startPos = mainBg.Position
+
+    end
+
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+
+    if not dragging then
+        return
+    end
+
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+
+        local delta = input.Position - dragStart
+
+        mainBg.Position = UDim2.new(
+            startPos.X.Scale,
+            startPos.X.Offset + delta.X,
+
+            startPos.Y.Scale,
+            startPos.Y.Offset + delta.Y
+        )
+
+    end
+
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+
+end)

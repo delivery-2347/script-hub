@@ -132,12 +132,16 @@ function uvidomleniya(title, content, duration, ImageID)
 	Library:Notify({ Title = title or "Notification", Content = content or "", Duration = duration or 5, ImageID = ImageID})
 end
 
-function SISTEM_uvidomleniya(title, content, duration, iconId)
+local function SISTEM_uvidomleniya(title, content, duration, icon)
+    if icon and not tostring(icon):find("rbxassetid://") then
+        icon = "rbxassetid://" .. tostring(icon)
+    end
+    
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = title,
         Text = content,
         Duration = duration,
-        Icon = iconId and ("rbxthumb://type=Asset&id=" .. iconId .. "&w=150&h=150") or nil
+        Icon = icon
     })
 end
 
@@ -159,9 +163,8 @@ local SPEED = 120
 local LIFE_TIME = 10
 local TELEPORT_HEIGHT = 1.5
 local MonsterLagSpeed = 0
-local height = 20
+local height = 50
 local radius = 30
-local HOLD_TIME = 3
 local center = Vector3.new(0, -7.35 + height, 0)
 local autoKillActive = false
 local isActive = false
@@ -193,10 +196,7 @@ local FPSMonitorConnection = nil
 local AntiKickThread = nil
 local jerkOffAnimTrack = nil
 local selectedKickPlayer = nil
-local ScriptNotify = ReplicatedStorage.GamepassEvents.FurtherReachBoughtNotifier
-local Activator = ReplicatedStorage.MenuToys.LimitedTimeToyEvent
 local Packet = "lol"
-local jerkOffAnimId = "rbxassetid://168268306"
 local currentImage = "rbxassetid://13417638612"
 local bool = {
     DoRagdoll = true 
@@ -213,19 +213,20 @@ local Cons = {}
 local packetConnections = {}
 local validTargets = {}
 local createdHolders = {}
-local XMATERIYAL = Enum.Material.Plastic
-local SVETPOLETKA = Color3.fromRGB(0, 0, 0)
-local ESPColor = Color3.fromRGB(0,255,56)
 local CUCUMBER_ESP = {
     SchemeColor = Color3.fromRGB(45, 160, 95),
     Background  = Color3.fromRGB(8, 18, 12),
     TextColor   = Color3.fromRGB(230, 230, 230),
 }
+local PlayerCount = #Players:GetPlayers()
+local XMATERIYAL = Enum.Material.Plastic
+local SVETPOLETKA = Color3.fromRGB(0, 0, 0)
+local ESPColor = Color3.fromRGB(0,255,56)
 local LGK_OAT_sno = function(part)
     if not part or not part.Parent then return end
     
     pcall(function()
-        ReplicatedStorage.GrabEvents.SetNetworkOwner:FireServer(part, part.CFrame)
+        SetNetworkOwner:FireServer(part, part.CFrame)
     end)
 end
 
@@ -271,46 +272,6 @@ local function TurnOn(playerObject)
 	TurnOff()
 	if not playerObject or not playerObject:IsA("Player") then return end
 	killThread = task.spawn(killLoop, playerObject)
-end
-
-local function StopHeart()
-    isActive = false
-    if heartConnection then
-        heartConnection:Disconnect()
-        heartConnection = nil
-    end
-    print("Animation Stopped")
-end
-
--- Функция запуска
-local function StartHeart()
-    if heartConnection then return end 
-    
-    isActive = true
-    local start = tick()
-
-    heartConnection = RunService.Heartbeat:Connect(function()
-        if not isActive then
-            StopHeart()
-            return
-        end
-        local folder = workspace:FindFirstChild("GrabParts")
-        local part = folder and folder:FindFirstChild("GrabPart")
-
-        -- 3. Если парт найден — анимируем
-        if part and part:IsA("BasePart") then
-            local t = (tick() - start) * 2
-            local x = 16 * math.sin(t)^3
-            local y = 13 * math.cos(t)
-                - 5 * math.cos(2*t)
-                - 2 * math.cos(3*t)
-                - math.cos(4*t)
-
-            part.CFrame = CFrame.new(x, y + 17, 0) * CFrame.Angles(0, t, 0)
-        else
-        
-        end
-    end)
 end
 
 local function snapBlobTo(blob, targetCFrame)
@@ -889,7 +850,7 @@ function startJerkOff()
 		animator.Parent = hum
 	end
 	local anim = Instance.new("Animation")
-	anim.AnimationId = jerkOffAnimId
+	anim.AnimationId = "rbxassetid://168268306"
 	jerkOffAnimTrack = animator:LoadAnimation(anim)
 	jerkOffAnimTrack.Priority = Enum.AnimationPriority.Action
 	jerkOffAnimTrack:Play()
@@ -1214,7 +1175,7 @@ local function applyBlackHoleSettings(child)
 	end
 end
 
-function playKickSound()
+local function playKickSound()
 	local s = Instance.new("Sound")
 	s.SoundId = "rbxassetid://140278004623742" -- Bell (Deltarune)
 	s.Volume = 1
@@ -1223,12 +1184,12 @@ function playKickSound()
 	s:Destroy()
 end
 
-function notifyKick(displayName, username, idfese)
+local function notifyKick(displayName, username, idfese)
 	uvidomleniya("kick user", displayName .. " (" .. username .. ") has been kicked", 5, idfese)
     print("kick user", displayName .. " (" .. username .. ") has been kicked")
 end
 
-function getClosestPlayer(pos)
+local function getClosestPlayer(pos)
 	local closestPlr = nil
 	local closestDist = math.huge
 	for _, plr in ipairs(Players:GetPlayers()) do
@@ -1275,22 +1236,27 @@ end)
 local AboutTab = Window:CreateTab("About", true, "9250846041")
 
 local LeftBlock = AboutTab:CreateBlock({
-    Name = "Cucumber Logo",
+    Name = "HIIII " .. LocalPlayer.Name,
     Side = "Left"
 })
 
-local RightBlock = AboutTab:CreateBlock({
+local ScriptInformationBlock = AboutTab:CreateBlock({
     Name = "Script Information",
     Side = "Right"
 })
 
+local InformationBlock = AboutTab:CreateBlock({
+    Name = "Information",
+    Side = "Right"
+})
+
 LeftBlock:CreateImage({
-    Name = "Logo",
-    ImageID = "86073487823375", -- ID картинки
+    Name = "Players hii",
+    ImageID = Players:GetUserThumbnailAsync(plr.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size420x420), -- ID картинки
     Height = 220
 })
 
-RightBlock:CreateLabel({
+ScriptInformationBlock:CreateLabel({
 Text = [[
 About Cucumber НUВ
 
@@ -1302,7 +1268,42 @@ Telegram: https://t.me/tg_CUCUMBERHUBV3
 
 HELP SCRIPT
 UNIN x Votex x sh1rlock x chatgpt
-]]
+]] 
+})
+
+local PlayerLabel = InformationBlock:CreateLabel({
+    Text = "Players in server: " .. PlayerCount .. "/25"
+})
+
+InformationBlock:CreateButton({
+    Name = "Rejoin",
+    Callback = function()
+        game:GetService("TeleportService"):Teleport(game.PlaceId, LocalPlayer)
+        LocalPlayer:kick("Rejoin")
+    end
+})
+
+InformationBlock:CreateButton({
+    Name = "Server Hop",
+    Callback = function()
+	    local servers = {}
+	    local req = game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true")
+	    local body = game:GetService("HttpService"):JSONDecode(req)
+
+	    if body and body.data then
+	    	for i, v in next, body.data do
+	    		if type(v) == "table" and tonumber(v.playing) and tonumber(v.maxPlayers) and v.playing < v.maxPlayers and v.id ~= game.JobId then
+	    			table.insert(servers, 1, v.id)
+	    		end
+	    	end
+	    end
+
+	    if #servers > 0 then
+	    	game:GetService("TeleportService"):TeleportToPlaceInstance(game.PlaceId, servers[math.random(1, #servers)], game:GetService("Players").LocalPlayer)
+	    else
+	    	return uvidomleniya("Serverhop", "Couldn't find a server.")
+	    end
+    end
 })
 
 Defense = Window:CreateTab("defense", true, "9250846041")
@@ -1363,46 +1364,51 @@ Characte:CreateToggle({
     Name = "Auto Reset",
     Flag = "Auto_Reset",
     Default = true,
+
     Callback = function(v)
         SetToggleState("Auto Reset", v)
-        if getgenv().AutoResetCon then getgenv().AutoResetCon:Disconnect() end
 
-        if v then
-            getgenv().AutoResetCon = ReplicatedStorage.GameCorrectionEvents.GameCorrectionsNotify.OnClientEvent:Connect(function(r)
-                if r == "Flying" then
-                    local char = game:GetService("Players").LocalPlayer.Character
-                    local hum = char and char:FindFirstChildOfClass("Humanoid")
-                    
-                    if hum then
-                        char:BreakJoints() 
-                        hum.Health = 0
-                        uvidomleniya('Auto Reset', 'lol', 3, 128781938176311)
-                    end
-                end
-            end)
+        if getgenv().AutoResetCon then
+            getgenv().AutoResetCon:Disconnect()
+            getgenv().AutoResetCon = nil
         end
-    end
-})
-
-Characte:CreateToggle({
-    Name = "Auto leave",
-    Flag = "Auto_leave",
-    Default = false,
-    Callback = function(v)
-        SetToggleState("Auto_leave", v)
-        if getgenv().AutoleaveCon then getgenv().AutoleaveCon:Disconnect() end
 
         if v then
-            getgenv().AutoleaveCon = ReplicatedStorage.GameCorrectionEvents.GameCorrectionsNotify.OnClientEvent:Connect(function(r)
-                if r == "Flying" then
-                    local char = game:GetService("Players").LocalPlayer.Character
-                    local hum = char and char:FindFirstChildOfClass("Humanoid")
+            getgenv().AutoResetCon =
+                ReplicatedStorage.GameCorrectionEvents.GameCorrectionsNotify.OnClientEvent:Connect(function(r)
                     
-                    if hum then
-                        plr:kick('Auto leave')
+                    if r == "Flying" then
+                        getgenv().FlyingCalls = getgenv().FlyingCalls or {}
+                        table.insert(getgenv().FlyingCalls, os.clock())
+
+                        local now = os.clock()
+
+                        for i = #getgenv().FlyingCalls, 1, -1 do
+                            if now - getgenv().FlyingCalls[i] > 0.1 then
+                                table.remove(getgenv().FlyingCalls, i)
+                            end
+                        end
+
+                        if #getgenv().FlyingCalls >= 3 then
+                            plr:Kick("Auto leave")
+                            return
+                        end
+
+                        local char = plr.Character
+                        local hum = char and char:FindFirstChildOfClass("Humanoid")
+
+                        if hum then
+                            char:BreakJoints()
+                            hum.Health = 0
+                            uvidomleniya(
+                                "Auto Reset",
+                                "lol",
+                                3,
+                                128781938176311
+                            )
+                        end
                     end
-                end
-            end)
+                end)
         end
     end
 })
@@ -2036,8 +2042,12 @@ kicl_all:CreateButton({
             local targetHRP = targetData.HRP
 
             if torso and targetHRP and targetHRP.Parent then
+                HRP.AssemblyLinearVelocity = Vector3.zero
+                HRP.AssemblyAngularVelocity = Vector3.zero
                 HRP.CFrame = targetHRP.CFrame * CFrame.new(0, 5, 0)
                 task.wait(0.15) 
+                HRP.AssemblyLinearVelocity = Vector3.zero
+                HRP.AssemblyAngularVelocity = Vector3.zero
                 SetNetworkOwner:FireServer(torso, targetHRP.CFrame)
                 task.wait(0.05)
                 CreateGrabLine:FireServer(torso, CFrame.new(0.216, -0.210, -0.500))
@@ -2074,6 +2084,22 @@ kicl_all:CreateButton({
             end
         end
 
+        local shakeStart = tick()
+        while tick() - shakeStart < 1 do
+            for i, targetData in ipairs(validTargets) do
+                local targetHRP = targetData.HRP
+                if targetHRP and targetHRP.Parent then
+                    local angle = (i - 1) * (2 * math.pi / #validTargets)
+                    local basePosition = center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+
+                    -- Математика тряски: амплитуда 20 студов, очень высокая скорость (tick * 60)
+                    local verticalOffset = math.sin(tick() * 5) * 10
+                    targetHRP.CFrame = CFrame.lookAt(basePosition + Vector3.new(0, verticalOffset, 0), center)
+                end
+            end
+            task.wait() -- Минимальная задержка для плавности/скорости
+        end
+
         for _, targetData in ipairs(validTargets) do
             local torso = targetData.Torso
             if torso and torso.Parent then
@@ -2084,7 +2110,7 @@ kicl_all:CreateButton({
 
         HRP.CFrame = CFrame.new(0, -7.35, 0)
 
-        task.wait(HOLD_TIME)
+        task.wait(3)
 
         for _, bv in ipairs(createdHolders) do
             if bv and bv.Parent then bv:Destroy() end
@@ -2448,62 +2474,6 @@ local Playertab = grab:CreateBlock({
     Side = "Right"
 })
 
-gametab:CreateToggle({
-    Name = "Heart Animation",
-    Default = false,
-    Flag = "HeartToggle", 
-    Callback = function(Value)
-        isActive = Value
-        if isActive then
-            StartHeart()
-        else
-            StopHeart()
-        end
-    end
-})
-
-Playertab:CreateToggle({
-    Name = "Further Reach",
-    Default = false, -- or true
-    Flag = "Further_Reach", 
-    Callback = function(State)
-    uvidomleniya("Further Reach", State and "Activated!" or "Disabled!", 5)
-        if State then
-            local LineTexture = LocalPlayer:FindFirstChild("FartherReach")
-            if LineTexture then
-                LineTexture:Destroy()
-            end
-            local LineTexture = Instance.new("BoolValue")
-            LineTexture.Name = "FartherReach"
-            LineTexture.Value = true
-            LineTexture.Parent = LocalPlayer
-            ScriptNotify.Parent = ReplicatedFirst
-            Activator.Parent = ReplicatedStorage.GamepassEvents
-            Activator.Name = "FurtherReachBoughtNotifier"
-            ReloadScript() 
-            task.delay(0.1, function()
-                Activator:FireServer()
-            end)
-            DiedHandle = LocalPlayer.CharacterAdded:Connect(function(Character)
-                Character:WaitForChild("GrabbingScript")
-                Toggle(false);task.wait(0.1)
-                Toggle(false)
-            end)
-        else
-            local LineTexture = LocalPlayer:FindFirstChild("FartherReach")
-            if LineTexture then
-                LineTexture:Destroy()
-            end
-            ScriptNotify.Parent = ReplicatedStorage.GamepassEvents
-            Activator.Name = "LimitedTimeToyEvent"
-            Activator.Parent = ReplicatedStorage.MenuToys
-            ReloadScript()
-            DiedHandle:Disconnect()
-            DiedHandle = nil
-        end
-    end
-})
-
 Server = Window:CreateTab("Server", true, "9250846041")
 
 local gametab = Server:CreateBlock({
@@ -2677,7 +2647,7 @@ Guitab:CreateDropdown({
 
 BlackHoletab:CreateToggle({
     Name = "BlackHole Kick custom",
-    Default = true, 
+    Default = false, 
     Flag = "BlackHole_Kick_custom", 
     Callback = function(State)
 		if connection then
@@ -2690,6 +2660,20 @@ BlackHoletab:CreateToggle({
 			end
 			connection = workspace.ChildAdded:Connect(applyBlackHoleSettings)
 		end
+    end
+})
+
+BlackHoletab:CreateDropdown({
+    Name = "BlackHole Kick Texture",
+    Items = {"cucumber slices", "furry cucumber"},
+    Default = "cucumber slices",
+    Flag = "BlackHole_Kick_Texture",
+    Callback = function(Value)
+        if Value == "cucumber slices" then
+            currentImage = "rbxassetid://13417638612"
+        elseif Value == "furry cucumber" then
+            currentImage = "rbxassetid://89413382215796"
+        end
     end
 })
 
@@ -3016,3 +3000,14 @@ Keybindss:CreateKeybind({
         BreakPart(GetTarget())
     end
 })
+
+local function UpdatePlayerCount()
+    PlayerCount = #Players:GetPlayers()
+
+    PlayerLabel.Set(
+        "Players in server: " .. PlayerCount .. "/25"
+    )
+end
+
+Players.PlayerAdded:Connect(UpdatePlayerCount)
+Players.PlayerRemoving:Connect(UpdatePlayerCount)
